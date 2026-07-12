@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The die-cut price tag badge — the one recurring visual motif tying the
+   whole app back to "affordable". Defined once here rather than repeated
+   as a long className string on every card. */
+.price-tag {
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+}
+.price-tag::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: theme("colors.primary.dark");
+}
