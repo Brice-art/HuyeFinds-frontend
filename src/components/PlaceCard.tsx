@@ -7,7 +7,7 @@ import type { PlaceSummary } from "@/types";
 
 export function PlaceCard({ place }: { place: PlaceSummary }) {
   const cover = place.images[0]?.url ?? "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80";
-  const { favorited, toggle } = useFavoriteToggle(place.id);
+  const { favorited, toggle } = useFavoriteToggle(place.id, place.isFavorited);
 
   return (
     <div className="flex-none w-[240px] md:w-[266px] bg-surface rounded-lg overflow-hidden shadow-soft border border-border flex flex-col transition-transform hover:-translate-y-1 hover:shadow-lift">

@@ -25,6 +25,7 @@ export interface PlaceSummary {
   reviewCount: number;
   category: { name: string; slug: string; icon: string };
   images: PlaceImage[];
+  isFavorited: boolean;
 }
 
 export interface MenuItem {
@@ -55,7 +56,6 @@ export interface PlaceDetail extends PlaceSummary {
   menuItems: MenuItem[];
   hours: BusinessHour[];
   reviews: Review[];
-  isFavorited: boolean;
 }
 
 export interface User {
