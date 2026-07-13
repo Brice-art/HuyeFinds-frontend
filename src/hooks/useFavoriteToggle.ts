@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
@@ -12,6 +12,10 @@ export function useFavoriteToggle(placeId: string, initialFavorited = false) {
   const navigate = useNavigate();
   const [favorited, setFavorited] = useState(initialFavorited);
   const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    setFavorited(initialFavorited);
+  }, [placeId, initialFavorited]);
 
   async function toggle() {
     if (!user) {
