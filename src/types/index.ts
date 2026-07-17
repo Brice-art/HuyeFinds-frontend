@@ -66,6 +66,16 @@ export interface User {
   avatarUrl: string | null;
 }
 
+export interface UploadedFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  progress: number;
+  failed?: boolean;
+  url?: string; // set once the staging upload succeeds
+}
+
 export interface Paginated<T> {
   items: T[];
   pagination: { page: number; limit: number; total: number; totalPages: number };
