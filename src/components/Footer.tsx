@@ -25,7 +25,7 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-[11.5px] uppercase tracking-wider text-[#8FA79A] mb-2.5">Huey Finds</h4>
+          <h4 className="text-[11.5px] uppercase tracking-wider text-[#8FA79A] mb-2.5">Huye Finds</h4>
           <ul className="space-y-2 text-[13px] text-[#DCE6DF]">
             <li>About</li>
             <li><Link to="/places/new">Add a place</Link></li>
