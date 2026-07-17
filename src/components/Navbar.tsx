@@ -21,17 +21,25 @@ export function Navbar() {
       </nav>
 
       <div className="flex items-center gap-2.5">
+        {user?.role === "OWNER" || user?.role === "ADMIN" ? (
+          <Link
+            to="/places/new"
+            className="hidden lg:flex items-center gap-1.5 text-[13px] font-semibold text-primary px-3 py-2"
+          >
+            + Add a place
+          </Link>
+        ) : null}
         {user ? (
           <button
             onClick={logout}
-            className="hidden lg:flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
           >
             Sign out
           </button>
         ) : (
           <Link
             to="/login"
-            className="hidden lg:flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
           >
             Sign in
           </Link>

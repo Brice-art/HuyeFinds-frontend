@@ -8,6 +8,7 @@ import { PlaceDetailsPage } from "@/pages/PlaceDetailsPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { FavoritesPage } from "@/pages/FavoritesPage";
+import { CreatePlacePage } from "@/pages/CreatePlacePage";
 import { ComingSoonPage } from "@/pages/ComingSoonPage";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/places/:slug" element={<PlaceDetailsPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/places/new" element={<CreatePlacePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function Footer() {
   return (
     <footer className="mt-2 px-5 pt-9 pb-8 md:px-10 md:pt-14 md:pb-9 bg-primary-dark text-[#EFEAE0] rounded-t-[32px]">
@@ -23,10 +25,10 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-[11.5px] uppercase tracking-wider text-[#8FA79A] mb-2.5">Huye Finds</h4>
+          <h4 className="text-[11.5px] uppercase tracking-wider text-[#8FA79A] mb-2.5">Huey Finds</h4>
           <ul className="space-y-2 text-[13px] text-[#DCE6DF]">
             <li>About</li>
-            <li>Add a place</li>
+            <li><Link to="/places/new">Add a place</Link></li>
             <li>Contact us</li>
           </ul>
         </div>
@@ -44,7 +46,7 @@ export function Footer() {
         </span>
       </div>
 
-      <p className="text-[11.5px] text-[#7C9187] mt-5">© 2026 Huye Finds. Made near Nyakinama roundabout.</p>
+      <p className="text-[11.5px] text-[#7C9187] mt-5">© 2026 Huye Finds. Made by students, for students.</p>
     </footer>
   );
 }
