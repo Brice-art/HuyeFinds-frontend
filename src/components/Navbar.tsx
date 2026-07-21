@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
+import { useCategories } from "@/hooks/useApi";
+import { CategoryDropdown } from "./CategoryDropdown";
 
 export function Navbar() {
   const { user, logout } = useAuth();
+  const { data: categories } = useCategories();
 
   return (
     <div className="flex items-center justify-between px-5 py-4 md:px-10 md:py-5">
@@ -13,11 +16,14 @@ export function Navbar() {
         Huye&nbsp;Finds
       </Link>
 
-      <nav className="hidden lg:flex gap-7 text-sm font-semibold text-ink-soft">
-        <Link to="/browse?category=restaurants" className="hover:text-primary">Restaurants</Link>
-        <Link to="/browse?category=grocery" className="hover:text-primary">Grocery</Link>
-        <Link to="/browse?category=pharmacies" className="hover:text-primary">Pharmacies</Link>
-        <Link to="/browse?category=printing" className="hover:text-primary">Printing</Link>
+      <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-soft">
+        {categories?.items.map((category) => (
+          <CategoryDropdown key={category.id} category={category} />
+        ))}
+        {/* Students Hub is deliberately a plain link, not a dropdown —
+            it's a future community/classifieds feature, not part of the
+            Category/Subcategory place taxonomy. */}
+        <Link to="/students-hub" className="hover:text-primary">Students Hub</Link>
       </nav>
 
       <div className="flex items-center gap-2.5">
@@ -32,14 +38,14 @@ export function Navbar() {
         {user ? (
           <button
             onClick={logout}
-            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-4.5 py-2.5 rounded-full"
           >
             Sign out
           </button>
         ) : (
           <Link
             to="/login"
-            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-4.5 py-2.5 rounded-full"
           >
             Sign in
           </Link>
