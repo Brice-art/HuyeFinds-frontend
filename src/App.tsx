@@ -26,6 +26,16 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
+              path="/students-hub"
+              element={
+                <ComingSoonPage
+                  title="Students Hub"
+                  emoji="🎒"
+                  description="Side hustles, lost & found, campus events, and announcements — a space for students to post directly. Launching in a future update."
+                />
+              }
+            />
+            <Route
               path="/housing"
               element={
                 <ComingSoonPage

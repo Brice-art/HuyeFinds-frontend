@@ -14,7 +14,7 @@ export function PlaceCard({ place }: { place: PlaceSummary }) {
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={cover} alt={place.name} className="w-full h-full object-cover" />
         <span className="absolute bottom-2.5 left-2.5 bg-ink/70 text-white text-[10.5px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
-          {place.category.name}
+          {place.subcategory.name}
         </span>
         <FavoriteButton favorited={favorited} onToggle={toggle} className="absolute top-2.5 right-2.5" />
       </div>

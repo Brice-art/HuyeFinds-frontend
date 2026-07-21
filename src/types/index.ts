@@ -3,6 +3,14 @@ export interface Category {
   name: string;
   slug: string;
   icon: string;
+  subcategories: Subcategory[];
+}
+
+export interface Subcategory {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
   placeCount: number;
 }
 
@@ -21,11 +29,11 @@ export interface PlaceSummary {
   priceMax: number;
   contactPhone: string;
   landmark: string;
-  ratingAvg: string; // Prisma Decimal is serialized as a string over JSON
+  ratingAvg: string;
   reviewCount: number;
-  category: { name: string; slug: string; icon: string };
-  images: PlaceImage[];
   isFavorited: boolean;
+  subcategory: { name: string; slug: string; icon: string; category: { name: string; slug: string } };
+  images: PlaceImage[];
 }
 
 export interface MenuItem {
@@ -58,14 +66,6 @@ export interface PlaceDetail extends PlaceSummary {
   reviews: Review[];
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "STUDENT" | "OWNER" | "ADMIN";
-  avatarUrl: string | null;
-}
-
 export interface UploadedFile {
   id: string;
   name: string;
@@ -73,7 +73,15 @@ export interface UploadedFile {
   type: string;
   progress: number;
   failed?: boolean;
-  url?: string; // set once the staging upload succeeds
+  url?: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "STUDENT" | "OWNER" | "ADMIN";
+  avatarUrl: string | null;
 }
 
 export interface Paginated<T> {

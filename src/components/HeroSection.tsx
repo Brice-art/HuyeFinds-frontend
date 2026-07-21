@@ -4,8 +4,8 @@ import { useScrollZoom } from "@/hooks/useScrollZoom";
 
 const CATS = [
   {
-    name: "Restaurants",
-    count: 26,
+    name: "Food & Drinks",
+    count: 34,
     tint: "#FBE4C8",
     fg: "#B4762A",
     icon: (
@@ -27,8 +27,8 @@ const CATS = [
     ),
   },
   {
-    name: "Grocery Stores",
-    count: 18,
+    name: "Shopping",
+    count: 41,
     tint: "#E7F0EA",
     fg: "#1F4E3C",
     icon: (
@@ -46,8 +46,8 @@ const CATS = [
     ),
   },
   {
-    name: "Pharmacies",
-    count: 12,
+    name: "Services",
+    count: 27,
     tint: "#DCEBFB",
     fg: "#2F6FB4",
     icon: (
@@ -61,16 +61,13 @@ const CATS = [
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" />
-        <rect x="4" y="7" width="16" height="13" rx="2.5" />
-        <line x1="12" y1="11" x2="12" y2="16" />
-        <line x1="9.5" y1="13.5" x2="14.5" y2="13.5" />
+        <path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 1 5.4-5.4l-2.6 2.6-2-2 2.6-2.6z" />
       </svg>
     ),
   },
   {
-    name: "Printing Shops",
-    count: 8,
+    name: "Accommodation",
+    count: 15,
     tint: "#E9E5FB",
     fg: "#5B4FA0",
     icon: (
@@ -82,9 +79,9 @@ const CATS = [
         stroke="currentColor"
         strokeWidth={1.8}
       >
-        <path d="M6 9V3h12v6" />
-        <rect x="4" y="9" width="16" height="8" rx="2" />
-        <path d="M6 17v4h12v-4" />
+        <path d="M3 10l9-7 9 7" />
+        <path d="M5 9v11h14V9" />
+        <rect x="9.5" y="13" width="5" height="7" />
       </svg>
     ),
   },
@@ -223,8 +220,8 @@ export function HeroSection() {
               <span className="text-primary">Huye.</span>
             </h1>
             <p className="text-[15px] lg:text-base text-ink-soft leading-relaxed mb-6 max-w-[38ch]">
-              Discover the best places around UR Huye. Restaurants,
-              shops, services and more, all in one place.
+              Discover the best places around UR Huye. Restaurants, shops,
+              services and more, all in one place.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 mb-9">
@@ -292,7 +289,9 @@ export function HeroSection() {
             >
               <PhoneMockup>
                 <div className="text-ink">
-                  <p className="text-[13px] text-ink-soft">Hello, Customer 👋</p>
+                  <p className="text-[13px] text-ink-soft">
+                    Hello, Customer 👋
+                  </p>
                   <h2 className="font-display font-bold text-[17px] leading-snug mb-3">
                     What are you looking for today?
                   </h2>
