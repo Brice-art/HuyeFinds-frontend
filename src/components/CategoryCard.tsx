@@ -10,9 +10,20 @@ const ICONS: Record<string, { svg: JSX.Element; tint: string; fg: string }> = {
     tint: "#FBEEDA",
     fg: "#B4762A",
     svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="4" />
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M4 10.5c0-3 3.6-5.5 8-5.5s8 2.5 8 5.5" />
+        <line x1="3.5" y1="10.5" x2="20.5" y2="10.5" />
+        <line x1="3.5" y1="13.5" x2="20.5" y2="13.5" />
+        <path d="M4 16.5h16c0 1.7-1.8 3-4 3H8c-2.2 0-4-1.3-4-3z" />
       </svg>
     ),
   },
