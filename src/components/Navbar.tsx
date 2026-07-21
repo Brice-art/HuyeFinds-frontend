@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { useCategories } from "@/hooks/useApi";
-import { CategoryDropdown } from "./CategoryDropDown";
+import { CategoryDropdown } from "./CategoryDropdown";
 
 export function Navbar() {
   const { user, logout } = useAuth();
