@@ -6,8 +6,8 @@ import type { Category } from "@/types";
 // new category in the DB only needs a matching entry here, not a new
 // component.
 const ICONS: Record<string, { svg: JSX.Element; tint: string; fg: string }> = {
-  plate: {
-    tint: "#FBEEDA",
+  food: {
+    tint: "#FBE4C8",
     fg: "#B4762A",
     svg: (
       <svg
@@ -27,34 +27,56 @@ const ICONS: Record<string, { svg: JSX.Element; tint: string; fg: string }> = {
       </svg>
     ),
   },
-  basket: {
+  bag: {
     tint: "#E7F0EA",
     fg: "#1F4E3C",
     svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+      >
         <path d="M5 9h14l-1.5 10a2 2 0 0 1-2 1.7H8.5a2 2 0 0 1-2-1.7L5 9z" />
         <path d="M9 9V6a3 3 0 0 1 6 0v3" />
       </svg>
     ),
   },
-  cross: {
-    tint: "#FDEAEA",
-    fg: "#B4453A",
+  tools: {
+    tint: "#DCEBFB",
+    fg: "#2F6FB4",
     svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-        <path d="M12 8v8M8 12h8" />
-        <rect x="3" y="3" width="18" height="18" rx="5" />
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 1 5.4-5.4l-2.6 2.6-2-2 2.6-2.6z" />
       </svg>
     ),
   },
-  printer: {
-    tint: "#E9EEFB",
-    fg: "#3B4FA0",
+  building: {
+    tint: "#E9E5FB",
+    fg: "#5B4FA0",
     svg: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-        <path d="M6 9V3h12v6" />
-        <rect x="4" y="9" width="16" height="8" rx="2" />
-        <path d="M6 17v4h12v-4" />
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+      >
+        <path d="M3 10l9-7 9 7" />
+        <path d="M5 9v11h14V9" />
+        <rect x="9.5" y="13" width="5" height="7" />
       </svg>
     ),
   },
@@ -75,7 +97,9 @@ export function CategoryCard({ category }: { category: Category }) {
         {icon.svg}
       </div>
       <span className="block text-xs font-semibold">{category.name}</span>
-      <small className="text-[10.5px] text-ink-soft">{category.placeCount} places</small>
+      <small className="text-[10.5px] text-ink-soft">
+        {category.placeCount} places
+      </small>
     </Link>
   );
 }

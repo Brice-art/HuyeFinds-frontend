@@ -38,14 +38,14 @@ export function Navbar() {
         {user ? (
           <button
             onClick={logout}
-            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-4.5 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
           >
             Sign out
           </button>
         ) : (
           <Link
             to="/login"
-            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-4.5 py-2.5 rounded-full"
+            className="flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
           >
             Sign in
           </Link>
