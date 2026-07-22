@@ -6,6 +6,7 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { PlaceCard } from "@/components/PlaceCard";
 import { usePlaceDetail, useSimilarPlaces } from "@/hooks/useApi";
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
+import { PlaceDetailSkeleton } from "@/components/PlaceDetailSkeleton";
 
 const DAY_LABELS: Record<string, string> = {
   MONDAY: "Monday",
@@ -32,10 +33,7 @@ export function PlaceDetailsPage() {
     place?.isFavorited ?? false,
   );
 
-  if (loading)
-    return (
-      <p className="px-5 md:px-10 py-10 text-sm text-ink-faint">Loading…</p>
-    );
+  if (loading) return <PlaceDetailSkeleton />;
   if (error || !place)
     return (
       <p className="px-5 md:px-10 py-10 text-sm text-heart">
@@ -230,7 +228,7 @@ export function PlaceDetailsPage() {
             </h2>
             <div className="flex gap-4 overflow-x-auto px-5 lg:px-0 pb-4">
               {similar.items.map((p) => (
-                <PlaceCard key={p.id} place={p} />
+                <PlaceCard key={p.id} place={p} variant="rail" />
               ))}
             </div>
           </>
