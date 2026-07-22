@@ -16,7 +16,7 @@ export function LandingPage() {
       <section className="px-5 md:px-10 pt-1.5 pb-2">
         <h2 className="text-[19px] lg:text-[23px] font-semibold mb-3.5">Browse by category</h2>
       </section>
-      <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-4.5 overflow-x-auto md:overflow-visible px-5 md:px-10 pb-5">
+      <div className="flex sm:grid sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4.5 overflow-x-auto md:overflow-visible px-5 md:px-10 pb-5">
         {catsLoading && <p className="text-sm text-ink-faint">Loading categories…</p>}
         {categories?.items.map((c) => (
           <CategoryCard key={c.id} category={c} />

@@ -29,7 +29,7 @@ export function BrowsePage() {
         <p className="text-sm text-heart">Couldn't load places: {error}</p>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 lg:gap-2">
+      <div className="block md:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3.5 lg:gap-5">
         {data?.items.map((p) => (
           <PlaceCard key={p.id} place={p} />
         ))}
