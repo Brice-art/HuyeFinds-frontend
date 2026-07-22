@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { PlaceCard } from "@/components/PlaceCard";
 import { usePlaces } from "@/hooks/useApi";
+import { PlaceCardSkeleton } from "@/components/PlaceCardSkeleton";
 
 export function BrowsePage() {
   const [params] = useSearchParams();
@@ -24,15 +25,16 @@ export function BrowsePage() {
       </h1>
       <SearchBar className="mb-6 lg:max-w-[480px]" />
 
-      {loading && <p className="text-sm text-ink-faint">Loading places…</p>}
       {error && (
         <p className="text-sm text-heart">Couldn't load places: {error}</p>
       )}
 
-      <div className="block md:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3.5 lg:gap-5">
-        {data?.items.map((p) => (
-          <PlaceCard key={p.id} place={p} />
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 lg:gap-5">
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <PlaceCardSkeleton key={i} />
+            ))
+          : data?.items.map((p) => <PlaceCard key={p.id} place={p} />)}
       </div>
 
       {!loading && data?.items.length === 0 && (
