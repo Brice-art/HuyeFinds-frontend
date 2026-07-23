@@ -11,10 +11,51 @@ export function PhoneMockup({ children }: { children: ReactNode }) {
 
         <div className="relative rounded-[36px] overflow-hidden bg-bg aspect-[9/19.5]">
           <div className="flex items-center justify-between px-6 pt-3.5 pb-1 text-[11px] font-semibold text-ink relative z-10">
-            <span>9:41</span>
+            <span>
+              {new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}
+            </span>
             <div className="flex items-center gap-1">
-              <svg width="14" height="10" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="0.5"/><rect x="4.5" y="4" width="3" height="8" rx="0.5"/><rect x="9" y="1" width="3" height="11" rx="0.5"/></svg>
-              <svg width="16" height="11" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1"><rect x="0.5" y="0.5" width="16" height="10" rx="2.5"/><rect x="2" y="2" width="12" height="7" rx="1.2" fill="currentColor"/><rect x="17.5" y="4" width="2" height="4" rx="1" fill="currentColor"/></svg>
+              <svg
+                width="14"
+                height="10"
+                viewBox="0 0 16 12"
+                fill="currentColor"
+              >
+                <rect x="0" y="7" width="3" height="5" rx="0.5" />
+                <rect x="4.5" y="4" width="3" height="8" rx="0.5" />
+                <rect x="9" y="1" width="3" height="11" rx="0.5" />
+              </svg>
+              <div>4G</div>
+              <svg
+                width="16"
+                height="11"
+                viewBox="0 0 20 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+              >
+                <rect x="0.5" y="0.5" width="16" height="10" rx="2.5" />
+                <rect
+                  x="2"
+                  y="2"
+                  width="12"
+                  height="7"
+                  rx="1.2"
+                  fill="currentColor"
+                />
+                <rect
+                  x="17.5"
+                  y="4"
+                  width="2"
+                  height="4"
+                  rx="1"
+                  fill="currentColor"
+                />
+              </svg>
             </div>
           </div>
 
