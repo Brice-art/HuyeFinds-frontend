@@ -7,6 +7,7 @@ import { PlaceCard } from "@/components/PlaceCard";
 import { usePlaceDetail, useSimilarPlaces } from "@/hooks/useApi";
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 import { PlaceDetailSkeleton } from "@/components/PlaceDetailSkeleton";
+import { cld } from "@/lib/cloudinaryUrl";
 
 const DAY_LABELS: Record<string, string> = {
   MONDAY: "Monday",
@@ -41,7 +42,8 @@ export function PlaceDetailsPage() {
       </p>
     );
 
-  const cover = place.images[selectedImage]?.url ?? place.images[0]?.url;
+  const rawCover = place.images[selectedImage]?.url ?? place.images[0]?.url;
+  const cover = rawCover ? cld(rawCover, 900) : undefined;
 
   return (
     <div className="lg:grid lg:grid-cols-[1.05fr_1fr] lg:gap-11 lg:px-10 lg:pt-6 lg:items-start">
@@ -81,8 +83,9 @@ export function PlaceDetailsPage() {
           {place.images.map((img, i) => (
             <button key={img.id} onClick={() => setSelectedImage(i)}>
               <img
-                src={img.url}
+                src={cld(img.url, 150)}
                 alt={img.altText}
+                loading="lazy"
                 className={`w-[74px] h-[74px] rounded-xl object-cover flex-none border-2 ${
                   i === selectedImage ? "border-accent" : "border-transparent"
                 }`}

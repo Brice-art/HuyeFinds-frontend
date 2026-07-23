@@ -8,8 +8,15 @@ interface FetchState<T> {
   error: string | null;
 }
 
-function useApiGet<T>(path: string | null, deps: unknown[] = []): FetchState<T> {
-  const [state, setState] = useState<FetchState<T>>({ data: null, loading: !!path, error: null });
+function useApiGet<T>(
+  path: string | null,
+  deps: unknown[] = [],
+): FetchState<T> {
+  const [state, setState] = useState<FetchState<T>>({
+    data: null,
+    loading: !!path,
+    error: null,
+  });
 
   useEffect(() => {
     if (!path) return;
@@ -22,13 +29,14 @@ function useApiGet<T>(path: string | null, deps: unknown[] = []): FetchState<T> 
         if (!cancelled) setState({ data, loading: false, error: null });
       })
       .catch((err) => {
-        if (!cancelled) setState({ data: null, loading: false, error: err.message ?? "Something went wrong" });
+        if (!cancelled)
+          setState({
+            data: null,
+            loading: false,
+            error: err.message ?? "Something went wrong",
+          });
       });
 
-    // Guards against setting state after unmount/re-fetch — a real bug
-    // class in React, not paranoia: without this, a slow first request
-    // resolving after a second faster one has already landed can stomp
-    // the newer data with stale results.
     return () => {
       cancelled = true;
     };
@@ -38,8 +46,63 @@ function useApiGet<T>(path: string | null, deps: unknown[] = []): FetchState<T> 
   return state;
 }
 
-export function useCategories() {
-  return useApiGet<{ items: Category[] }>("/categories");
+// --- Categories: shared cache + in-flight dedup ---------------------
+// Navbar, HomePage, and LandingPage each call useCategories() independently
+// — this was firing 2-3 separate identical requests on a normal page load.
+// Categories rarely change at runtime, so cache the result at module scope
+// and share one in-flight request across every mount point instead. Resets
+// naturally on a full page reload (JS module state, not persisted).
+let categoriesCache: { items: Category[] } | null = null;
+let categoriesInFlight: Promise<{ items: Category[] }> | null = null;
+
+function fetchCategoriesShared(): Promise<{ items: Category[] }> {
+  if (categoriesCache) return Promise.resolve(categoriesCache);
+  if (!categoriesInFlight) {
+    categoriesInFlight = api
+      .get<{ items: Category[] }>("/categories")
+      .then((data) => {
+        categoriesCache = data;
+        categoriesInFlight = null;
+        return data;
+      })
+      .catch((err) => {
+        categoriesInFlight = null;
+        throw err;
+      });
+  }
+  return categoriesInFlight;
+}
+
+export function useCategories(): FetchState<{ items: Category[] }> {
+  const [state, setState] = useState<FetchState<{ items: Category[] }>>({
+    data: categoriesCache,
+    loading: !categoriesCache,
+    error: null,
+  });
+
+  useEffect(() => {
+    if (categoriesCache) return;
+    let cancelled = false;
+
+    fetchCategoriesShared()
+      .then((data) => {
+        if (!cancelled) setState({ data, loading: false, error: null });
+      })
+      .catch((err) => {
+        if (!cancelled)
+          setState({
+            data: null,
+            loading: false,
+            error: err.message ?? "Something went wrong",
+          });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return state;
 }
 
 export function usePlaces(query: string) {
@@ -51,5 +114,8 @@ export function usePlaceDetail(slug: string | undefined) {
 }
 
 export function useSimilarPlaces(slug: string | undefined) {
-  return useApiGet<{ items: PlaceSummary[] }>(slug ? `/places/${slug}/similar` : null, [slug]);
+  return useApiGet<{ items: PlaceSummary[] }>(
+    slug ? `/places/${slug}/similar` : null,
+    [slug],
+  );
 }
