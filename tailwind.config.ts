@@ -38,6 +38,15 @@ export default {
         soft: "0 8px 24px -12px rgba(32,29,26,0.14)",
         lift: "0 16px 36px -14px rgba(32,29,26,0.22)",
       },
+      keyframes: {
+        slideIn: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        slideIn: "slideIn 0.2s ease-out",
+      },
     },
   },
   plugins: [],

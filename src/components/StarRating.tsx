@@ -1,10 +1,14 @@
 interface StarRatingProps {
-  rating: number; // 0–5, can be a decimal average
+  rating: number;
   reviewCount?: number;
 }
 
 export function StarRating({ rating, reviewCount }: StarRatingProps) {
   const rounded = Math.round(rating);
+
+  if (rating <= 0) {
+    return <div className="text-xs text-ink-faint">No reviews yet</div>;
+  }
 
   return (
     <div className="flex items-center gap-1 text-xs text-ink-soft">
@@ -23,8 +27,10 @@ export function StarRating({ rating, reviewCount }: StarRatingProps) {
         </svg>
       ))}
       <span className="ml-1">
-        {rating > 0 ? rating.toFixed(1) : "New"}
-        {reviewCount !== undefined && reviewCount > 0 ? ` (${reviewCount})` : ""}
+        {rating.toFixed(1)}
+        {reviewCount !== undefined && reviewCount > 0
+          ? ` (${reviewCount})`
+          : ""}
       </span>
     </div>
   );

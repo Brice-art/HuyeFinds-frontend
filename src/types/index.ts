@@ -33,7 +33,12 @@ export interface PlaceSummary {
   ratingAvg: string;
   reviewCount: number;
   isFavorited: boolean;
-  subcategory: { name: string; slug: string; icon: string; category: { name: string; slug: string } };
+  subcategory: {
+    name: string;
+    slug: string;
+    icon: string;
+    category: { name: string; slug: string };
+  };
   images: PlaceImage[];
 }
 
@@ -87,5 +92,29 @@ export interface User {
 
 export interface Paginated<T> {
   items: T[];
-  pagination: { page: number; limit: number; total: number; totalPages: number };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export type HubPostType =
+  | "SIDE_HUSTLE"
+  | "LOST_FOUND"
+  | "EVENT"
+  | "ANNOUNCEMENT";
+
+export interface HubPost {
+  id: string;
+  type: HubPostType;
+  title: string;
+  description: string;
+  contactPhone: string | null;
+  location: string | null;
+  eventDate: string | null;
+  createdAt: string;
+  authorId: string;
+  author: { name: string };
 }

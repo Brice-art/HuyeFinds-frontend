@@ -4,7 +4,11 @@ import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { ImageUpload, StagedImage } from "@/components/ImageUpload";
 import { MenuItemsEditor, DraftMenuItem } from "@/components/MenuItemsEditor";
-import { BusinessHoursEditor, DraftHour, createDefaultHours } from "@/components/BusinessHoursEditor";
+import {
+  BusinessHoursEditor,
+  DraftHour,
+  createDefaultHours,
+} from "@/components/BusinessHoursEditor";
 import type { Category } from "@/types";
 
 interface CreatedPlace {
@@ -18,6 +22,18 @@ function slugify(value: string) {
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
+}
+
+function titleCase(value: string) {
+  return value
+    .trim()
+    .split(/\s+/)
+    .map((word) =>
+      word.length > 0
+        ? word[0].toUpperCase() + word.slice(1).toLowerCase()
+        : word,
+    )
+    .join(" ");
 }
 
 const inputClass =
@@ -94,7 +110,7 @@ export function CreatePlacePage() {
     try {
       console.log(imageState.images);
       const place = await api.post<CreatedPlace>("/places", {
-        name,
+        name: titleCase(name),
         slug,
         description,
         subcategoryId,
@@ -104,7 +120,11 @@ export function CreatePlacePage() {
         landmark,
         images: imageState.images,
         menuItems: menuItems.length
-          ? menuItems.map((m) => ({ name: m.name, price: Number(m.price), note: m.note || undefined }))
+          ? menuItems.map((m) => ({
+              name: m.name,
+              price: Number(m.price),
+              note: m.note || undefined,
+            }))
           : undefined,
         hours: includeHours
           ? hours.map((h) => ({
@@ -146,10 +166,13 @@ export function CreatePlacePage() {
     return (
       <div className="max-w-md mx-auto px-5 py-16 text-center">
         <div className="text-4xl mb-4">🔒</div>
-        <h1 className="font-display text-xl font-semibold mb-2">Business accounts only</h1>
+        <h1 className="font-display text-xl font-semibold mb-2">
+          Business accounts only
+        </h1>
         <p className="text-sm text-ink-soft leading-relaxed">
-          Adding a place is limited to business owner accounts for now. If you run a place near
-          campus and want it listed, reach out and we'll get you set up.
+          Adding a place is limited to business owner accounts for now. If you
+          run a place near campus and want it listed, reach out and we'll get
+          you set up.
         </p>
       </div>
     );
@@ -159,14 +182,19 @@ export function CreatePlacePage() {
 
   return (
     <div className="max-w-xl mx-auto px-5 py-8 md:py-12">
-      <h1 className="font-display text-2xl font-semibold mb-1">Create a new place</h1>
+      <h1 className="font-display text-2xl font-semibold mb-1">
+        Create a new place
+      </h1>
       <p className="text-sm text-ink-soft mb-7">
-        Add your business so students can find you. Photos, menu, and hours are optional but help a lot.
+        Add your business so students can find you. Photos, menu, and hours are
+        optional but help a lot.
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div>
-          <label htmlFor="name" className={labelClass}>Place name</label>
+          <label htmlFor="name" className={labelClass}>
+            Place name
+          </label>
           <input
             id="name"
             type="text"
@@ -181,7 +209,9 @@ export function CreatePlacePage() {
         </div>
 
         <div>
-          <label htmlFor="slug" className={labelClass}>Slug</label>
+          <label htmlFor="slug" className={labelClass}>
+            Slug
+          </label>
           <input
             id="slug"
             type="text"
@@ -198,12 +228,15 @@ export function CreatePlacePage() {
             className={`${inputClass} font-mono`}
           />
           <p className="text-xs text-ink-faint mt-1.5">
-            Used in the page URL. Auto-filled from the name — edit it directly to override.
+            Used in the page URL. Auto-filled from the name — edit it directly
+            to override.
           </p>
         </div>
 
         <div>
-          <label htmlFor="description" className={labelClass}>Description</label>
+          <label htmlFor="description" className={labelClass}>
+            Description
+          </label>
           <textarea
             id="description"
             rows={5}
@@ -219,7 +252,9 @@ export function CreatePlacePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="categoryId" className={labelClass}>Category</label>
+            <label htmlFor="categoryId" className={labelClass}>
+              Category
+            </label>
             <select
               id="categoryId"
               required
@@ -236,7 +271,9 @@ export function CreatePlacePage() {
             </select>
           </div>
           <div>
-            <label htmlFor="subcategoryId" className={labelClass}>Subcategory</label>
+            <label htmlFor="subcategoryId" className={labelClass}>
+              Subcategory
+            </label>
             <select
               id="subcategoryId"
               required
@@ -245,7 +282,11 @@ export function CreatePlacePage() {
               onChange={(e) => setSubcategoryId(e.target.value)}
               className={`${inputClass} disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              <option value="">{selectedCategory ? "Select a subcategory" : "Pick a category first"}</option>
+              <option value="">
+                {selectedCategory
+                  ? "Select a subcategory"
+                  : "Pick a category first"}
+              </option>
               {selectedCategory?.subcategories.map((sub) => (
                 <option key={sub.id} value={sub.id}>
                   {sub.name}
@@ -256,10 +297,17 @@ export function CreatePlacePage() {
         </div>
 
         <fieldset className="border border-border rounded-md p-4">
-          <legend className="text-[13px] font-semibold px-1.5 -ml-1.5">Price range (RWF)</legend>
+          <legend className="text-[13px] font-semibold px-1.5 -ml-1.5">
+            Price range (RWF)
+          </legend>
           <div className="grid grid-cols-2 gap-4 mt-1">
             <div>
-              <label htmlFor="priceMin" className="text-xs text-ink-soft mb-1 block">Minimum</label>
+              <label
+                htmlFor="priceMin"
+                className="text-xs text-ink-soft mb-1 block"
+              >
+                Minimum
+              </label>
               <input
                 id="priceMin"
                 type="number"
@@ -272,7 +320,12 @@ export function CreatePlacePage() {
               />
             </div>
             <div>
-              <label htmlFor="priceMax" className="text-xs text-ink-soft mb-1 block">Maximum</label>
+              <label
+                htmlFor="priceMax"
+                className="text-xs text-ink-soft mb-1 block"
+              >
+                Maximum
+              </label>
               <input
                 id="priceMax"
                 type="number"
@@ -288,7 +341,9 @@ export function CreatePlacePage() {
         </fieldset>
 
         <div>
-          <label htmlFor="contactPhone" className={labelClass}>Contact phone</label>
+          <label htmlFor="contactPhone" className={labelClass}>
+            Contact phone
+          </label>
           <input
             id="contactPhone"
             type="tel"
@@ -303,7 +358,9 @@ export function CreatePlacePage() {
         </div>
 
         <div>
-          <label htmlFor="landmark" className={labelClass}>Nearest landmark</label>
+          <label htmlFor="landmark" className={labelClass}>
+            Nearest landmark
+          </label>
           <input
             id="landmark"
             type="text"
@@ -324,7 +381,9 @@ export function CreatePlacePage() {
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className={`${labelClass} mb-0`}>Business hours (optional)</label>
+            <label className={`${labelClass} mb-0`}>
+              Business hours (optional)
+            </label>
             <label className="flex items-center gap-1.5 text-[12px] text-ink-soft">
               <input
                 type="checkbox"
@@ -335,7 +394,9 @@ export function CreatePlacePage() {
               Add hours
             </label>
           </div>
-          {includeHours && <BusinessHoursEditor hours={hours} onChange={setHours} />}
+          {includeHours && (
+            <BusinessHoursEditor hours={hours} onChange={setHours} />
+          )}
         </div>
 
         <div>
@@ -351,7 +412,11 @@ export function CreatePlacePage() {
             disabled={submitDisabled}
             className="flex-1 bg-primary text-white font-semibold text-sm py-3.5 rounded-full disabled:opacity-60 transition-opacity"
           >
-            {submitting ? "Creating…" : imageState.isUploading ? "Uploading photos…" : "Create place"}
+            {submitting
+              ? "Creating…"
+              : imageState.isUploading
+                ? "Uploading photos…"
+                : "Create place"}
           </button>
           <button
             type="button"

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import type { Category, Paginated, PlaceDetail, PlaceSummary } from "@/types";
+import type {
+  Category,
+  HubPost,
+  Paginated,
+  PlaceDetail,
+  PlaceSummary,
+} from "@/types";
 
 interface FetchState<T> {
   data: T | null;
@@ -109,8 +115,14 @@ export function usePlaces(query: string) {
   return useApiGet<Paginated<PlaceSummary>>(`/places${query}`, [query]);
 }
 
-export function usePlaceDetail(slug: string | undefined) {
-  return useApiGet<PlaceDetail>(slug ? `/places/${slug}` : null, [slug]);
+export function usePlaceDetail(
+  slug: string | undefined,
+  refreshKey: number = 0,
+) {
+  return useApiGet<PlaceDetail>(slug ? `/places/${slug}` : null, [
+    slug,
+    refreshKey,
+  ]);
 }
 
 export function useSimilarPlaces(slug: string | undefined) {
@@ -118,4 +130,10 @@ export function useSimilarPlaces(slug: string | undefined) {
     slug ? `/places/${slug}/similar` : null,
     [slug],
   );
+}
+export function useHubPosts(query: string, refreshKey: number = 0) {
+  return useApiGet<Paginated<HubPost>>(`/hub-posts${query}`, [
+    query,
+    refreshKey,
+  ]);
 }
