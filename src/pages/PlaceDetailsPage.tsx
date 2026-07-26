@@ -4,10 +4,12 @@ import { PriceTag } from "@/components/PriceTag";
 import { StarRating } from "@/components/StarRating";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { PlaceCard } from "@/components/PlaceCard";
+import { ReviewForm } from "@/components/ReviewForm";
 import { usePlaceDetail, useSimilarPlaces } from "@/hooks/useApi";
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 import { PlaceDetailSkeleton } from "@/components/PlaceDetailSkeleton";
 import { cld } from "@/lib/cloudinaryUrl";
+import { getOpenStatus } from "@/lib/openStatus";
 
 const DAY_LABELS: Record<string, string> = {
   MONDAY: "Monday",
@@ -22,9 +24,11 @@ const DAY_LABELS: Record<string, string> = {
 export function PlaceDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { data: place, loading, error } = usePlaceDetail(slug);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { data: place, loading, error } = usePlaceDetail(slug, refreshKey);
   const { data: similar } = useSimilarPlaces(slug);
   const [selectedImage, setSelectedImage] = useState(0);
+
   // Called unconditionally (before the early returns below) so hook order
   // stays stable across renders — falls back to an empty placeId until
   // `place` loads, which is fine since neither favorite button renders
@@ -44,6 +48,7 @@ export function PlaceDetailsPage() {
 
   const rawCover = place.images[selectedImage]?.url ?? place.images[0]?.url;
   const cover = rawCover ? cld(rawCover, 900) : undefined;
+  const openStatus = getOpenStatus(place.hours);
 
   return (
     <div className="lg:grid lg:grid-cols-[1.05fr_1fr] lg:gap-11 lg:px-10 lg:pt-6 lg:items-start">
@@ -112,6 +117,13 @@ export function PlaceDetailsPage() {
             rating={Number(place.ratingAvg)}
             reviewCount={place.reviewCount}
           />
+          {openStatus && (
+            <p
+              className={`text-xs font-semibold mt-1.5 ${openStatus.isOpen ? "text-primary" : "text-heart"}`}
+            >
+              {openStatus.isOpen ? "●" : "○"} {openStatus.label}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-between bg-surface border border-border rounded-md px-4 py-3.5 mx-5 lg:mx-0 my-4 shadow-soft">
@@ -194,6 +206,10 @@ export function PlaceDetailsPage() {
         <h2 className="px-5 lg:px-0 text-lg font-semibold mb-3.5">
           Student reviews
         </h2>
+        <ReviewForm
+          placeId={place.id}
+          onSubmitted={() => setRefreshKey((k) => k + 1)}
+        />
         {place.reviews.length === 0 && (
           <p className="px-5 lg:px-0 text-sm text-ink-faint mb-2">
             No reviews yet — be the first to leave one.

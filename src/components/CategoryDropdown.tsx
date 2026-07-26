@@ -58,7 +58,7 @@ export function CategoryDropdown({ category }: CategoryDropdownProps) {
               className="flex items-center justify-between px-4 py-2.5 text-[13.5px] font-medium text-ink hover:bg-primary-tint hover:text-primary"
             >
               {sub.name}
-              <span className="text-[11px] text-ink-faint">{sub.placeCount}</span>
+              <span className="w-[25px] h-[20px] rounded-[5px] bg-accent/20 text-primary text-[11px] flex items-center justify-center">{sub.placeCount}</span>
             </Link>
           ))}
           <div className="border-t border-border mt-1.5 pt-1.5">

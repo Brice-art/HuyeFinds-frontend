@@ -41,6 +41,16 @@ const ComingSoonPage = lazy(() =>
   import("@/pages/ComingSoonPage").then((m) => ({ default: m.ComingSoonPage })),
 );
 
+const StudentsHubPage = lazy(() =>
+  import("@/pages/StudentsHubPage").then((m) => ({
+    default: m.StudentsHubPage,
+  })),
+);
+const CreateHubPostPage = lazy(() =>
+  import("@/pages/CreateHubPostPage").then((m) => ({
+    default: m.CreateHubPostPage,
+  })),
+);
 function RouteLoadingFallback() {
   return (
     <div className="flex items-center justify-center py-24">
@@ -64,16 +74,8 @@ export default function App() {
               <Route path="/places/new" element={<CreatePlacePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route
-                path="/students-hub"
-                element={
-                  <ComingSoonPage
-                    title="Students Hub"
-                    emoji="🎒"
-                    description="Side hustles, lost & found, campus events, and announcements — a space for students to post directly. Launching in a future update."
-                  />
-                }
-              />
+              <Route path="/students-hub" element={<StudentsHubPage />} />
+              <Route path="/students-hub/new" element={<CreateHubPostPage />} />
               <Route
                 path="/housing"
                 element={
