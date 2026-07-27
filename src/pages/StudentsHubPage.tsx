@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { HubPostCard } from "@/components/HubPostCard";
+import { HubPostCardSkeleton } from "@/components/HubPostCardSkeleton";
 import { useHubPosts } from "@/hooks/useApi";
 import { useAuth } from "@/lib/AuthContext";
 import type { HubPostType } from "@/types";
@@ -58,7 +59,6 @@ export function StudentsHubPage() {
       {error && (
         <p className="text-sm text-heart">Couldn't load posts: {error}</p>
       )}
-      {loading && <p className="text-sm text-ink-faint">Loading…</p>}
 
       {!loading && data?.items.length === 0 && (
         <p className="text-sm text-ink-faint mt-4">
@@ -79,13 +79,17 @@ export function StudentsHubPage() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {data?.items.map((post) => (
-          <HubPostCard
-            key={post.id}
-            post={post}
-            onDeleted={() => setRefreshKey((k) => k + 1)}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <HubPostCardSkeleton key={i} />
+            ))
+          : data?.items.map((post) => (
+              <HubPostCard
+                key={post.id}
+                post={post}
+                onDeleted={() => setRefreshKey((k) => k + 1)}
+              />
+            ))}
       </div>
     </div>
   );
