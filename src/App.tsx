@@ -29,6 +29,16 @@ const LoginPage = lazy(() =>
 const RegisterPage = lazy(() =>
   import("@/pages/RegisterPage").then((m) => ({ default: m.RegisterPage })),
 );
+const ForgotPasswordPage = lazy(() =>
+  import("@/pages/ForgotPasswordPage").then((m) => ({
+    default: m.ForgotPasswordPage,
+  })),
+);
+const ResetPasswordPage = lazy(() =>
+  import("@/pages/ResetPasswordPage").then((m) => ({
+    default: m.ResetPasswordPage,
+  })),
+);
 const FavoritesPage = lazy(() =>
   import("@/pages/FavoritesPage").then((m) => ({ default: m.FavoritesPage })),
 );
@@ -74,6 +84,8 @@ export default function App() {
               <Route path="/places/new" element={<CreatePlacePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/students-hub" element={<StudentsHubPage />} />
               <Route path="/students-hub/new" element={<CreateHubPostPage />} />
               <Route

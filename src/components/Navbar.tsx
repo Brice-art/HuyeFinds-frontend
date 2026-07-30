@@ -23,7 +23,7 @@ export function Navbar() {
         {categories?.items.map((category) => (
           <CategoryDropdown key={category.id} category={category} />
         ))}
-        <Link to="/students-hub" className="hover:text-primary">
+        <Link to="/students-hub" className="px-6 py-2.5 text-accent bg-primary hover:text-primary hover:bg-accent rounded-sm">
           Students Hub
         </Link>
       </nav>
