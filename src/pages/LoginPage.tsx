@@ -28,7 +28,9 @@ export function LoginPage() {
   return (
     <div className="max-w-sm mx-auto px-5 py-14">
       <h1 className="font-display text-2xl font-semibold mb-1">Welcome back</h1>
-      <p className="text-sm text-ink-soft mb-6">Sign in to save favorites and leave reviews.</p>
+      <p className="text-sm text-ink-soft mb-6">
+        Sign in to save favorites and leave reviews.
+      </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         <input
@@ -39,14 +41,22 @@ export function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           className="border border-border rounded-md px-4 py-3 text-sm outline-none focus:border-primary"
         />
-        <input
-          type="password"
-          required
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border border-border rounded-md px-4 py-3 text-sm outline-none focus:border-primary"
-        />
+        <div>
+          <input
+            type="password"
+            required
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-border rounded-md px-4 py-3 text-sm outline-none focus:border-primary w-full"
+          />
+          <Link
+            to="/forgot-password"
+            className="text-[12.5px] text-primary font-semibold mt-1.5 inline-block"
+          >
+            Forgot password?
+          </Link>
+        </div>
         {error && <p className="text-sm text-heart">{error}</p>}
         <button
           type="submit"
@@ -58,7 +68,10 @@ export function LoginPage() {
       </form>
 
       <p className="text-sm text-ink-soft mt-5">
-        No account? <Link to="/register" className="text-primary font-semibold">Create one</Link>
+        No account?{" "}
+        <Link to="/register" className="text-primary font-semibold">
+          Create one
+        </Link>
       </p>
     </div>
   );

@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { api } from "./api";
 import type { User } from "@/types";
 
@@ -8,7 +14,12 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    phone: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -32,13 +43,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login(email: string, password: string) {
-    const res = await api.post<{ user: User; token: string }>("/auth/login", { email, password });
+    const res = await api.post<{ user: User; token: string }>("/auth/login", {
+      email,
+      password,
+    });
     localStorage.setItem(TOKEN_KEY, res.token);
     setUser(res.user);
   }
 
-  async function register(name: string, email: string, password: string) {
-    const res = await api.post<{ user: User; token: string }>("/auth/register", { name, email, password });
+  async function register(
+    name: string,
+    email: string,
+    phone: string,
+    password: string,
+  ) {
+    const res = await api.post<{ user: User; token: string }>(
+      "/auth/register",
+      { name, email, phone, password },
+    );
     localStorage.setItem(TOKEN_KEY, res.token);
     setUser(res.user);
   }
