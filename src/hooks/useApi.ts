@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 import type {
   Category,
   HubPost,
+  HubPostStats,
   Paginated,
   PlaceDetail,
   PlaceSummary,
@@ -136,4 +137,15 @@ export function useHubPosts(query: string, refreshKey: number = 0) {
     query,
     refreshKey,
   ]);
+}
+
+export function useHubPost(id: string | undefined) {
+  // Deliberately no refreshKey — the backend increments the view
+  // counter on every GET of a single post, so this must only ever
+  // fetch once per mount.
+  return useApiGet<HubPost>(id ? `/hub-posts/${id}` : null, [id]);
+}
+
+export function useHubPostStats() {
+  return useApiGet<HubPostStats>("/hub-posts/stats", []);
 }

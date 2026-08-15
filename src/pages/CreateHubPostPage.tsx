@@ -2,13 +2,15 @@ import { FormEvent, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
+import { ImageUpload, StagedImage } from "@/components/ImageUpload";
 import type { HubPostType } from "@/types";
 
 const TYPE_OPTIONS: { value: HubPostType; label: string }[] = [
+  { value: "ANNOUNCEMENT", label: "Announcement" },
   { value: "SIDE_HUSTLE", label: "Side Hustle" },
+  { value: "BUY_SELL", label: "Buy & Sell" },
   { value: "LOST_FOUND", label: "Lost & Found" },
   { value: "EVENT", label: "Event" },
-  { value: "ANNOUNCEMENT", label: "Announcement" },
 ];
 
 const inputClass =
@@ -22,28 +24,54 @@ export function CreateHubPostPage() {
   const [type, setType] = useState<HubPostType>("ANNOUNCEMENT");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [location, setLocation] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [isUrgent, setIsUrgent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const [imageState, setImageState] = useState<{
+    images: StagedImage[];
+    isUploading: boolean;
+    hasFailed: boolean;
+  }>({
+    images: [],
+    isUploading: false,
+    hasFailed: false,
+  });
 
   if (authLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
+  const showPrice = type === "BUY_SELL" || type === "SIDE_HUSTLE";
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    setSubmitting(true);
 
+    if (imageState.isUploading) {
+      setError("Wait for photo uploads to finish before posting.");
+      return;
+    }
+    if (imageState.hasFailed) {
+      setError("Remove or retry the failed photo before posting.");
+      return;
+    }
+
+    setSubmitting(true);
     try {
       await api.post("/hub-posts", {
         type,
         title,
         description,
+        price: showPrice && price ? Number(price) : undefined,
+        isUrgent,
         contactPhone: contactPhone.trim() || undefined,
         location: location.trim() || undefined,
         eventDate: type === "EVENT" && eventDate ? eventDate : undefined,
+        images: imageState.images,
       });
       navigate("/students-hub");
     } catch (err) {
@@ -59,8 +87,8 @@ export function CreateHubPostPage() {
         New Students Hub post
       </h1>
       <p className="text-sm text-ink-soft mb-7">
-        Side hustles, lost & found, events, or announcements — visible to every
-        student.
+        Side hustles, buy &amp; sell, lost &amp; found, events, or announcements
+        — visible to every student.
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -101,9 +129,11 @@ export function CreateHubPostPage() {
                 ? "e.g. Lost blue backpack near library"
                 : type === "SIDE_HUSTLE"
                   ? "e.g. Fixing laptops, 3000 RWF/hour"
-                  : type === "EVENT"
-                    ? "e.g. Campus talent show"
-                    : "e.g. Library closed this weekend"
+                  : type === "BUY_SELL"
+                    ? "e.g. HP Pavilion laptop, i5, 8GB RAM"
+                    : type === "EVENT"
+                      ? "e.g. Campus talent show"
+                      : "e.g. Library closed this weekend"
             }
             className={inputClass}
           />
@@ -124,6 +154,23 @@ export function CreateHubPostPage() {
             className={`${inputClass} resize-none`}
           />
         </div>
+
+        {showPrice && (
+          <div>
+            <label htmlFor="price" className={labelClass}>
+              Price (RWF, optional)
+            </label>
+            <input
+              id="price"
+              type="number"
+              min="0"
+              step="1"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className={`${inputClass} font-mono`}
+            />
+          </div>
+        )}
 
         {type === "EVENT" && (
           <div>
@@ -170,14 +217,33 @@ export function CreateHubPostPage() {
           />
         </div>
 
+        <label className="flex items-center gap-2 text-[13px] text-ink-soft">
+          <input
+            type="checkbox"
+            checked={isUrgent}
+            onChange={(e) => setIsUrgent(e.target.checked)}
+            className="accent-primary"
+          />
+          Mark as urgent
+        </label>
+
+        <div>
+          <label className={labelClass}>Photos (optional)</label>
+          <ImageUpload onStateChange={setImageState} />
+        </div>
+
         {error && <p className="text-sm text-heart -mt-2">{error}</p>}
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || imageState.isUploading}
           className="bg-primary text-white font-semibold text-sm py-3.5 rounded-full disabled:opacity-60"
         >
-          {submitting ? "Posting…" : "Post to Students Hub"}
+          {submitting
+            ? "Posting…"
+            : imageState.isUploading
+              ? "Uploading photos…"
+              : "Post to Students Hub"}
         </button>
       </form>
     </div>

@@ -61,6 +61,12 @@ const CreateHubPostPage = lazy(() =>
     default: m.CreateHubPostPage,
   })),
 );
+
+const HubPostDetailPage = lazy(() =>
+  import("@/pages/HubPostDetailPage").then((m) => ({
+    default: m.HubPostDetailPage,
+  })),
+);
 function RouteLoadingFallback() {
   return (
     <div className="flex items-center justify-center py-24">
@@ -88,6 +94,7 @@ export default function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/students-hub" element={<StudentsHubPage />} />
               <Route path="/students-hub/new" element={<CreateHubPostPage />} />
+              <Route path="/students-hub/:id" element={<HubPostDetailPage />} />
               <Route
                 path="/housing"
                 element={
