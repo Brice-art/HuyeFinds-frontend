@@ -103,19 +103,48 @@ export interface Paginated<T> {
 
 export type HubPostType =
   | "SIDE_HUSTLE"
+  | "BUY_SELL"
   | "LOST_FOUND"
   | "EVENT"
   | "ANNOUNCEMENT";
+
+export interface HubPostImage {
+  id: string;
+  url: string;
+  altText: string;
+  isCover: boolean;
+}
+
+export interface HubPostComment {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: { name: string };
+}
 
 export interface HubPost {
   id: string;
   type: HubPostType;
   title: string;
   description: string;
+  price: number | null;
+  isUrgent: boolean;
+  isPinned: boolean;
+  viewCount: number;
   contactPhone: string | null;
   location: string | null;
   eventDate: string | null;
   createdAt: string;
   authorId: string;
   author: { name: string };
+  images: HubPostImage[];
+  likeCount: number;
+  commentCount: number;
+  isLiked: boolean;
+  isSaved: boolean;
+}
+
+export interface HubPostStats {
+  total: number;
+  byType: Record<string, number>;
 }
