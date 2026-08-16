@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { useCategories } from "@/hooks/useApi";
 import { CategoryDropdown } from "./CategoryDropdown";
@@ -9,9 +9,11 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const { data: categories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isStudentsHub = location.pathname.startsWith("/students-hub");
 
   return (
-    <div className="flex items-center justify-between px-5 py-4 md:px-10 md:py-5">
+    <div className={`flex items-center justify-between px-5 py-4 md:px-10 md:py-5 ${isStudentsHub ? "bg-transparent text-white" : ""}`}>
       <Link to="/" className="flex items-center gap-2 font-bold text-[17px]">
         <span className="w-[30px] h-[30px] rounded-[9px] bg-primary text-accent flex items-center justify-center font-display font-bold text-base">
           H
@@ -47,6 +49,7 @@ export function Navbar() {
         ) : (
           <Link
             to="/login"
+            state={{ from: location }}
             className="hidden lg:flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full"
           >
             Sign in

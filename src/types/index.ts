@@ -34,10 +34,11 @@ export interface PlaceSummary {
   reviewCount: number;
   isFavorited: boolean;
   subcategory: {
+    id: string;
     name: string;
     slug: string;
     icon: string;
-    category: { name: string; slug: string };
+    category: { id: string; name: string; slug: string };
   };
   images: PlaceImage[];
 }
@@ -102,8 +103,8 @@ export interface Paginated<T> {
 }
 
 export type HubPostType =
-  | "SIDE_HUSTLE"
   | "BUY_SELL"
+  | "SIDE_HUSTLE"
   | "LOST_FOUND"
   | "EVENT"
   | "ANNOUNCEMENT";

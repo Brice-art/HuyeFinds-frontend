@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -16,10 +16,12 @@ export function ReviewForm({ placeId, onSubmitted }: ReviewFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const location = useLocation();
+
   if (!user) {
     return (
       <div className="bg-surface border border-border rounded-md px-4 py-3.5 mx-5 lg:mx-0 mb-4 text-sm text-ink-soft">
-        <Link to="/login" className="text-primary font-semibold">
+        <Link to="/login" state={{ from: location }} className="text-primary font-semibold">
           Sign in
         </Link>{" "}
         to leave a review.

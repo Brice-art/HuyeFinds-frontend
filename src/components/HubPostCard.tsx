@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { MdEvent, MdPlace, MdPhone, MdImage } from "react-icons/md";
 import { useHubPostToggle } from "@/hooks/useHubPostToggle";
 import { cld } from "@/lib/cloudinaryUrl";
 import type { HubPost, HubPostType } from "@/types";
+import { useAuth } from "@/lib/AuthContext";
+import { FaUser } from 'react-icons/fa'; 
 
 const TYPE_LABELS: Record<HubPostType, string> = {
   SIDE_HUSTLE: "Side Hustle",
@@ -43,27 +46,44 @@ export function HubPostCard({ post }: { post: HubPost }) {
     e.stopPropagation();
     toggleLike();
   }
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <Link
       to={`/students-hub/${post.id}`}
       className="block bg-surface border border-border rounded-lg overflow-hidden hover:shadow-lift hover:-translate-y-0.5 transition-all"
     >
-      {cover && (
-        <div className="relative aspect-[16/10]">
-          <img
-            src={cld(cover, 500)}
-            alt=""
-            loading="lazy"
-            className="w-full h-full object-cover"
-          />
-          {post.isUrgent && (
-            <span className="absolute top-2.5 right-2.5 bg-heart text-white text-[10px] font-bold px-2 py-1 rounded-full">
-              URGENT
-            </span>
-          )}
-        </div>
-      )}
+      <div className="relative aspect-[16/10]">
+        {cover ? (
+          <>
+            <img
+              src={cld(cover, 500)}
+              alt=""
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+            {post.isUrgent && (
+              <span className="absolute top-2.5 right-2.5 bg-heart text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                URGENT
+              </span>
+            )}
+          </>
+        ) : (
+          <div className="w-full h-full bg-surface flex items-center justify-center text-ink-faint">
+            <div className="flex items-center">
+              <MdImage size={40} />
+              <p>No Image</p> 
+            </div>
+            
+            {post.isUrgent && (
+              <span className="absolute top-2.5 right-2.5 bg-heart text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                URGENT
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="p-4 flex flex-col gap-2">
         <div className="flex items-center justify-between">
@@ -90,8 +110,8 @@ export function HubPostCard({ post }: { post: HubPost }) {
         )}
 
         {post.eventDate && (
-          <p className="text-[12px] text-primary font-semibold">
-            📅{" "}
+          <p className="text-[12px] text-primary font-semibold flex items-center gap-2">
+            <MdEvent className="text-primary" />
             {new Date(post.eventDate).toLocaleDateString(undefined, {
               weekday: "short",
               month: "short",
@@ -99,17 +119,27 @@ export function HubPostCard({ post }: { post: HubPost }) {
             })}
           </p>
         )}
-        {post.location && (
-          <p className="text-[12px] text-ink-faint">📍 {post.location}</p>
-        )}
+        <div className="flex justify-between">
+          {post.location && (
+            <p className="text-[14px] text-ink-faint flex items-center gap-2"><MdPlace style={{ color: style.fg }} />{post.location}</p>
+          )}
+          {post.contactPhone && (
+            <a
+              href={`tel:${post.contactPhone}`}
+              className="inline-flex items-center gap-2 text-[14px]"
+            >
+              <MdPhone /> {post.contactPhone}
+            </a>
+          )}
+        </div>
 
         <div className="flex items-center justify-between mt-1 pt-2.5 border-t border-border">
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-6 h-6 rounded-full bg-accent-tint text-primary-dark flex items-center justify-center font-display font-bold text-[10px] flex-none">
-              {post.author.name[0]}
+              {isAdmin ? <FaUser /> : post.author.name[0]}
             </div>
             <span className="text-[11.5px] text-ink-faint truncate">
-              {post.author.name}
+              {isAdmin ? 'Admin' : post.author.name}
             </span>
           </div>
           <div className="flex items-center gap-3 text-[11.5px] text-ink-faint flex-none">
