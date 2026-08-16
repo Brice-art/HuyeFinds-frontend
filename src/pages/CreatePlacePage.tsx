@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { ImageUpload, StagedImage } from "@/components/ImageUpload";
@@ -160,8 +160,9 @@ export function CreatePlacePage() {
     setError(null);
   }
 
+  const location = useLocation();
   if (authLoading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
   if (user.role !== "OWNER" && user.role !== "ADMIN") {
     return (
       <div className="max-w-md mx-auto px-5 py-16 text-center">

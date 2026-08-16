@@ -6,6 +6,7 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { PlaceCard } from "@/components/PlaceCard";
 import { ReviewForm } from "@/components/ReviewForm";
 import { usePlaceDetail, useSimilarPlaces } from "@/hooks/useApi";
+import { useAuth } from "@/lib/AuthContext";
 import { useFavoriteToggle } from "@/hooks/useFavoriteToggle";
 import { PlaceDetailSkeleton } from "@/components/PlaceDetailSkeleton";
 import { cld } from "@/lib/cloudinaryUrl";
@@ -28,6 +29,7 @@ export function PlaceDetailsPage() {
   const { data: place, loading, error } = usePlaceDetail(slug, refreshKey);
   const { data: similar } = useSimilarPlaces(slug);
   const [selectedImage, setSelectedImage] = useState(0);
+  const { user } = useAuth();
 
   // Called unconditionally (before the early returns below) so hook order
   // stays stable across renders — falls back to an empty placeId until
@@ -111,6 +113,14 @@ export function PlaceDetailsPage() {
             <span className="text-[11.5px] font-semibold text-primary bg-primary-tint px-3 py-1.5 rounded-full">
               {place.subcategory.name}
             </span>
+            {user?.role === "ADMIN" && (
+              <button
+                onClick={() => navigate(`/places/${slug}/edit`)}
+                className="ml-2 text-xs font-semibold text-ink-faint bg-surface px-3 py-1 rounded"
+              >
+                Edit
+              </button>
+            )}
             <PriceTag min={place.priceMin} max={place.priceMax} size="lg" />
           </div>
           <StarRating

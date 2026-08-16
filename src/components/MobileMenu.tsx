@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SearchBar } from "./SearchBar";
 import type { Category, User } from "@/types";
 
@@ -18,6 +18,7 @@ export function MobileMenu({
   user,
   onLogout,
 }: MobileMenuProps) {
+  const location = useLocation();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -176,6 +177,7 @@ export function MobileMenu({
           ) : (
             <Link
               to="/login"
+              state={{ from: location }}
               onClick={onClose}
               className="block text-center w-full bg-primary text-white text-[13.5px] font-semibold py-3 rounded-full"
             >

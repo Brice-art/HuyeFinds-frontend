@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { PlaceCard } from "@/components/PlaceCard";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
@@ -17,8 +17,9 @@ export function FavoritesPage() {
       .then((res) => setPlaces(res.items));
   }, [user]);
 
+  const location = useLocation();
   if (authLoading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
 
   return (
     <div className="px-5 md:px-10 py-6">
