@@ -50,7 +50,7 @@ export function StudentsHubPage() {
         style={{
           height: "clamp(280px, 100vh, 800px)",
           backgroundImage:
-            "linear-gradient(to bottom, rgba(255,255,255,0) 45%, rgba(255,255,255,1) 75%), url('/images/ur_building_n.jpeg')",
+            "linear-gradient(to bottom, rgba(255,255,255,0) 45%, rgba(255,255,255,1) 75%), url('/images/ur_building.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center top",
         }}
