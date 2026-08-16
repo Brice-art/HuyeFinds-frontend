@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { ImageUpload, StagedImage } from "@/components/ImageUpload";
@@ -42,8 +42,9 @@ export function CreateHubPostPage() {
     hasFailed: false,
   });
 
+  const locationPage = useLocation();
   if (authLoading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" state={{ from: locationPage }} replace />;
 
   const showPrice = type === "BUY_SELL" || type === "SIDE_HUSTLE";
 

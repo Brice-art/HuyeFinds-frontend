@@ -3,22 +3,33 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useHubPost } from "@/hooks/useApi";
 import { useHubPostToggle } from "@/hooks/useHubPostToggle";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocation } from "react-router-dom";
+import { MdEvent, MdPlace, MdPhone } from "react-icons/md";
 import { api, ApiError } from "@/lib/api";
 import { cld } from "@/lib/cloudinaryUrl";
 import type { HubPostComment, HubPostType } from "@/types";
 
 const TYPE_LABELS: Record<HubPostType, string> = {
-  SIDE_HUSTLE: "Side Hustle",
   BUY_SELL: "Buy & Sell",
+  SIDE_HUSTLE: "Side Hustle",
   LOST_FOUND: "Lost & Found",
   EVENT: "Event",
   ANNOUNCEMENT: "Announcement",
+};
+
+const TYPE_STYLES: Record<HubPostType, { tint: string; fg: string }> = {
+  SIDE_HUSTLE: { tint: "#E7F0EA", fg: "#1F4E3C" },
+  BUY_SELL: { tint: "#FBE4C8", fg: "#B4762A" },
+  LOST_FOUND: { tint: "#FDEAEA", fg: "#B4453A" },
+  EVENT: { tint: "#E9E5FB", fg: "#5B4FA0" },
+  ANNOUNCEMENT: { tint: "#DCEBFB", fg: "#2F6FB4" },
 };
 
 export function HubPostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
 
   const { data: post, loading, error } = useHubPost(id);
   const { active: liked, toggle: toggleLike } = useHubPostToggle(
@@ -80,12 +91,14 @@ export function HubPostDetailPage() {
     );
 
   const cover = post.images[0]?.url;
+  const typeStyle = TYPE_STYLES[post.type];
   const isOwnPost = user?.id === post.authorId;
+  const isEditable = isOwnPost || user?.role === "ADMIN";
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-6">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/students-hub')}
         className="text-[13px] font-semibold text-ink-soft mb-4"
       >
         ← Back
@@ -126,8 +139,8 @@ export function HubPostDetailPage() {
       </p>
 
       {post.eventDate && (
-        <p className="text-[13px] text-primary font-semibold mb-1.5">
-          📅{" "}
+        <p className="text-[13px] text-primary font-semibold mb-1.5 flex items-center gap-2">
+          <MdEvent className="text-primary" />
           {new Date(post.eventDate).toLocaleDateString(undefined, {
             weekday: "long",
             month: "long",
@@ -136,14 +149,15 @@ export function HubPostDetailPage() {
         </p>
       )}
       {post.location && (
-        <p className="text-[13px] text-ink-soft mb-1.5">📍 {post.location}</p>
+        <p className="text-[13px] text-ink-soft mb-1.5 flex items-center gap-2"><MdPlace style={{ color: typeStyle.fg }} />{post.location}</p>
       )}
       {post.contactPhone && (
         <a
           href={`tel:${post.contactPhone}`}
           className="inline-flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-4 py-2.5 rounded-full mb-4"
         >
-          Call {post.contactPhone}
+          <MdPhone />
+          <span>Call {post.contactPhone}</span>
         </a>
       )}
 
@@ -178,13 +192,21 @@ export function HubPostDetailPage() {
           {post.likeCount}
         </button>
 
-        {isOwnPost && (
-          <button
-            onClick={handleDeletePost}
-            className="text-[12.5px] font-semibold text-heart"
-          >
-            Delete
-          </button>
+        {isEditable && (
+          <>
+            <button
+              onClick={() => navigate(`/students-hub/${post.id}/edit`)}
+              className="text-[12.5px] font-semibold text-ink-faint"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDeletePost}
+              className="text-[12.5px] font-semibold text-heart"
+            >
+              Delete
+            </button>
+          </>
         )}
       </div>
 
@@ -211,7 +233,7 @@ export function HubPostDetailPage() {
         </form>
       ) : (
         <p className="text-[13px] text-ink-soft mb-4">
-          <Link to="/login" className="text-primary font-semibold">
+          <Link to="/login" state={{ from: location }} className="text-primary font-semibold">
             Sign in
           </Link>{" "}
           to comment.

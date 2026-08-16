@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { MdFolder, MdLocalOffer, MdWork, MdPhoneIphone, MdCampaign, MdEvent, MdAutoAwesome } from "react-icons/md";
 import { HubPostCard } from "@/components/HubPostCard";
 import { PinnedAnnouncements } from "@/components/PinnedAnnouncements";
 import { useHubPosts, useHubPostStats } from "@/hooks/useApi";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocation } from "react-router-dom";
 import type { HubPostType } from "@/types";
 
 type SortOption = "newest" | "mostLiked" | "mostViewed";
 
-const TABS: { label: string; value: HubPostType | ""; icon: string }[] = [
-  { label: "All Posts", value: "", icon: "🗂️" },
-  { label: "Side Hustles", value: "SIDE_HUSTLE", icon: "💼" },
-  { label: "Buy & Sell", value: "BUY_SELL", icon: "🏷️" },
-  { label: "Lost & Found", value: "LOST_FOUND", icon: "📱" },
-  { label: "Announcements", value: "ANNOUNCEMENT", icon: "📢" },
-  { label: "Events", value: "EVENT", icon: "📅" },
+const TABS: { label: string; value: HubPostType | ""; icon: JSX.Element }[] = [
+  { label: "All Posts", value: "", icon: <MdFolder size={20} /> },
+  { label: "Buy & Sell", value: "BUY_SELL", icon: <MdLocalOffer size={20} color="#B4762A" /> },
+  { label: "Side Hustles", value: "SIDE_HUSTLE", icon: <MdWork size={20} color="#1F4E3C" /> },
+  { label: "Lost & Found", value: "LOST_FOUND", icon: <MdPhoneIphone size={20} color="#B4453A" /> },
+  { label: "Announcements", value: "ANNOUNCEMENT", icon: <MdCampaign size={20} color="#2F6FB4" /> },
+  { label: "Events", value: "EVENT", icon: <MdEvent size={20} color="#5B4FA0" /> },
 ];
 
 export function StudentsHubPage() {
@@ -38,11 +40,26 @@ export function StudentsHubPage() {
 
   const { data, loading, error } = useHubPosts(`?${params.toString()}`);
 
+  const location = useLocation();
+
   return (
-    <div className="px-5 md:px-10 py-6">
+    <div className="relative">
+      <div
+        aria-hidden
+        className="fixed left-0 right-0 top-0 -z-10 bg-cover bg-center pointer-events-none"
+        style={{
+          height: "clamp(280px, 100vh, 800px)",
+          backgroundImage:
+            "linear-gradient(to bottom, rgba(255,255,255,0) 45%, rgba(255,255,255,1) 75%), url('/images/ur_building_n.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+        }}
+      />
+      <div className="px-5 md:px-10 py-6">
       <div className="flex items-center justify-between mb-1">
         <h1 className="font-display text-2xl font-semibold flex items-center gap-2">
-          Students Hub <span>✨</span>
+          Students Hub
+          <MdAutoAwesome className="text-primary" size={18} />
         </h1>
         {user && (
           <Link
@@ -82,7 +99,7 @@ export function StudentsHubPage() {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
-          className="border border-border rounded-full px-4 py-3 text-[13px] font-semibold bg-surface"
+          className="border border-border rounded-lg px-4 py-3 text-[13px] font-semibold bg-surface"
         >
           <option value="newest">Sort: Newest</option>
           <option value="mostLiked">Sort: Most liked</option>
@@ -132,7 +149,7 @@ export function StudentsHubPage() {
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-primary font-semibold">
+              <Link to="/login" state={{ from: location}} className="text-primary font-semibold">
                 Sign in
               </Link>{" "}
               to post.
@@ -166,11 +183,13 @@ export function StudentsHubPage() {
         ) : (
           <Link
             to="/login"
+            state={{ from: location }}
             className="bg-white text-primary-dark font-semibold text-[13px] px-5 py-2.5 rounded-full flex-none"
           >
             Sign in to post
           </Link>
         )}
+      </div>
       </div>
     </div>
   );
