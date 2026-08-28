@@ -21,6 +21,8 @@ import { ShareButton } from "@/components/ShareButton";
 import { useHubPostToggle } from "@/hooks/useHubPostToggle";
 import { cld } from "@/lib/cloudinaryUrl";
 import type { HubPost, HubPostType } from "@/types";
+import { useAuth } from "@/lib/AuthContext";
+import { FaUser } from 'react-icons/fa'; 
 
 const TYPE_LABELS: Record<HubPostType, string> = {
   SIDE_HUSTLE: "Side Hustle",
@@ -139,6 +141,8 @@ export function HubPostCard({ post }: { post: HubPost }) {
     e.stopPropagation();
     toggleLike();
   }
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
 
   function handleSaveClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();

@@ -20,6 +20,8 @@ import { ShareButton } from "@/components/ShareButton";
 import { useHubPost } from "@/hooks/useApi";
 import { useHubPostToggle } from "@/hooks/useHubPostToggle";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocation } from "react-router-dom";
+import { MdEvent, MdPlace, MdPhone } from "react-icons/md";
 import { api, ApiError } from "@/lib/api";
 import { cld } from "@/lib/cloudinaryUrl";
 import type { HubPostComment, HubPostType } from "@/types";
@@ -84,6 +86,7 @@ export function HubPostDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const location = useLocation();
 
   const { data: post, loading, error } = useHubPost(id);
 

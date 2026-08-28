@@ -21,6 +21,7 @@ import { PinnedAnnouncements } from "@/components/PinnedAnnouncements";
 import { HubPostCardSkeleton } from "@/components/HubPostCardSkeleton";
 import { useHubPosts, useHubPostStats } from "@/hooks/useApi";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocation } from "react-router-dom";
 import type { HubPostType } from "@/types";
 
 type SortOption = "newest" | "mostLiked" | "mostViewed";
@@ -125,6 +126,8 @@ export function StudentsHubPage() {
   const activeTabData = TABS.find((tab) => tab.value === activeTab) ?? TABS[0];
 
   const visibleCount = data?.items?.length ?? 0;
+
+  const location = useLocation();
 
   return (
     <div className="relative min-w-0">
