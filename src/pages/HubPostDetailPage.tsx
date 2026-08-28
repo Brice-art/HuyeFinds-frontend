@@ -82,11 +82,6 @@ function timeAgo(dateStr: string) {
 export function HubPostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-<<<<<<< HEAD
-=======
-  const location = useLocation();
-  const { user } = useAuth();
->>>>>>> cc06674669b514c24494a9641266c25e0e1129dc
   const location = useLocation();
   const { user } = useAuth();
 
