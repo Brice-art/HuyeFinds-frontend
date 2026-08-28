@@ -1,10 +1,26 @@
 import { Link } from "react-router-dom";
-import { MdEvent, MdPlace, MdPhone, MdImage } from "react-icons/md";
+import {
+  MdEvent,
+  MdPlace,
+  MdPhone,
+  MdImage,
+  MdVisibility,
+  MdComment,
+  MdFavorite,
+  MdBookmarkBorder,
+  MdWork,
+  MdLocalOffer,
+  MdSearch,
+  MdCampaign,
+  MdArrowForward,
+} from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { useState } from "react";
+
+import { ShareButton } from "@/components/ShareButton";
 import { useHubPostToggle } from "@/hooks/useHubPostToggle";
 import { cld } from "@/lib/cloudinaryUrl";
 import type { HubPost, HubPostType } from "@/types";
-import { useAuth } from "@/lib/AuthContext";
-import { FaUser } from 'react-icons/fa'; 
 
 const TYPE_LABELS: Record<HubPostType, string> = {
   SIDE_HUSTLE: "Side Hustle",
@@ -14,181 +30,390 @@ const TYPE_LABELS: Record<HubPostType, string> = {
   ANNOUNCEMENT: "Announcement",
 };
 
-const TYPE_STYLES: Record<HubPostType, { tint: string; fg: string }> = {
-  SIDE_HUSTLE: { tint: "#E7F0EA", fg: "#1F4E3C" },
-  BUY_SELL: { tint: "#FBE4C8", fg: "#B4762A" },
-  LOST_FOUND: { tint: "#FDEAEA", fg: "#B4453A" },
-  EVENT: { tint: "#E9E5FB", fg: "#5B4FA0" },
-  ANNOUNCEMENT: { tint: "#DCEBFB", fg: "#2F6FB4" },
+const TYPE_STYLES: Record<
+  HubPostType,
+  {
+    tint: string;
+    fg: string;
+    icon: React.ReactNode;
+  }
+> = {
+  SIDE_HUSTLE: {
+    tint: "#E7F0EA",
+    fg: "#1F4E3C",
+    icon: <MdWork size={14} />,
+  },
+  BUY_SELL: {
+    tint: "#FBE4C8",
+    fg: "#B4762A",
+    icon: <MdLocalOffer size={14} />,
+  },
+  LOST_FOUND: {
+    tint: "#FDEAEA",
+    fg: "#B4453A",
+    icon: <MdSearch size={14} />,
+  },
+  EVENT: {
+    tint: "#E9E5FB",
+    fg: "#5B4FA0",
+    icon: <MdEvent size={14} />,
+  },
+  ANNOUNCEMENT: {
+    tint: "#DCEBFB",
+    fg: "#2F6FB4",
+    icon: <MdCampaign size={14} />,
+  },
 };
 
 function timeAgo(dateStr: string): string {
   const diffMs = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diffMs / 3_600_000);
-  if (hours < 1) return "Just now";
+
+  if (diffMs < 0) return "Just now";
+
+  const minutes = Math.floor(diffMs / 60_000);
+
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+
+  const hours = Math.floor(minutes / 60);
+
   if (hours < 24) return `${hours}h ago`;
+
   const days = Math.floor(hours / 24);
+
   if (days < 7) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString();
+
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year:
+      new Date(dateStr).getFullYear() !== new Date().getFullYear()
+        ? "numeric"
+        : undefined,
+  });
+}
+
+function formatEventDate(dateStr: string) {
+  const date = new Date(dateStr);
+
+  return {
+    weekday: date.toLocaleDateString(undefined, {
+      weekday: "short",
+    }),
+    day: date.toLocaleDateString(undefined, {
+      day: "numeric",
+    }),
+    month: date.toLocaleDateString(undefined, {
+      month: "short",
+    }),
+    time: date.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    }),
+  };
+}
+
+function isNewPost(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return diff >= 0 && diff < 24 * 60 * 60 * 1000;
 }
 
 export function HubPostCard({ post }: { post: HubPost }) {
   const style = TYPE_STYLES[post.type];
+
   const { active: liked, toggle: toggleLike } = useHubPostToggle(
     post.id,
     "like",
     post.isLiked,
   );
-  const cover = post.images[0]?.url;
 
-  function handleLikeClick(e: React.MouseEvent) {
+  const [saved, setSaved] = useState(false);
+
+  const cover = post.images?.[0]?.url;
+  const newPost = isNewPost(post.createdAt);
+
+  const authorIsAdmin = "role" in post.author && post.author.role === "ADMIN";
+
+  function handleLikeClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
     toggleLike();
   }
-  const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
+
+  function handleSaveClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setSaved((current) => !current);
+  }
+
+  function handleContactClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (post.contactPhone) {
+      window.location.href = `tel:${post.contactPhone}`;
+    }
+  }
+
+  const eventDate = post.eventDate ? formatEventDate(post.eventDate) : null;
 
   return (
-    <Link
-      to={`/students-hub/${post.id}`}
-      className="block bg-surface border border-border rounded-lg overflow-hidden hover:shadow-lift hover:-translate-y-0.5 transition-all"
-    >
-      <div className="relative aspect-[16/10]">
-        {cover ? (
-          <>
+    <Link to={`/students-hub/${post.id}`}>
+      <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lift cursor-pointer">
+        <div
+          className="absolute inset-0 z-0 cursor-pointer focus:outline-none focus:ring-4 focus:ring-primary/30 rounded-2xl"
+          aria-label={`View ${post.title}`}
+        />
+
+        {/* Image */}
+        <div className="relative aspect-[16/10] overflow-hidden bg-accent-tint">
+          {cover ? (
             <img
-              src={cld(cover, 500)}
+              src={cld(cover, 700)}
               alt=""
               loading="lazy"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.035]"
             />
-            {post.isUrgent && (
-              <span className="absolute top-2.5 right-2.5 bg-heart text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                URGENT
-              </span>
-            )}
-          </>
-        ) : (
-          <div className="w-full h-full bg-surface flex items-center justify-center text-ink-faint">
-            <div className="flex items-center">
-              <MdImage size={40} />
-              <p>No Image</p> 
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-ink-faint">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface/80">
+                <MdImage size={25} />
+              </div>
+              <span className="text-[11px]">No image added</span>
             </div>
-            
-            {post.isUrgent && (
-              <span className="absolute top-2.5 right-2.5 bg-heart text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                URGENT
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="p-4 flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <span
-            className="text-[10.5px] font-semibold px-2.5 py-1 rounded-full"
-            style={{ background: style.tint, color: style.fg }}
-          >
-            {TYPE_LABELS[post.type]}
-          </span>
-          <span className="text-[11px] text-ink-faint">
-            {timeAgo(post.createdAt)}
-          </span>
-        </div>
-
-        <h3 className="text-[15px] font-semibold leading-snug">{post.title}</h3>
-        <p className="text-[13px] text-ink-soft leading-relaxed line-clamp-2">
-          {post.description}
-        </p>
-
-        {post.price != null && (
-          <span className="price-tag inline-flex w-fit items-center gap-1.5 bg-accent text-primary-dark font-mono font-semibold text-[12.5px] py-1 pr-2.5 pl-3">
-            {post.price.toLocaleString("en-RW")} RWF
-          </span>
-        )}
-
-        {post.eventDate && (
-          <p className="text-[12px] text-primary font-semibold flex items-center gap-2">
-            <MdEvent className="text-primary" />
-            {new Date(post.eventDate).toLocaleDateString(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            })}
-          </p>
-        )}
-        <div className="flex justify-between">
-          {post.location && (
-            <p className="text-[14px] text-ink-faint flex items-center gap-2"><MdPlace style={{ color: style.fg }} />{post.location}</p>
           )}
-          {post.contactPhone && (
-            <a
-              href={`tel:${post.contactPhone}`}
-              className="inline-flex items-center gap-2 text-[14px]"
+
+          {/* Image overlay */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent opacity-60" />
+
+          {/* Category */}
+          <div className="absolute left-3 top-3 flex items-center gap-1.5">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10.5px] font-bold shadow-sm backdrop-blur-sm"
+              style={{
+                backgroundColor: style.tint,
+                color: style.fg,
+              }}
             >
-              <MdPhone /> {post.contactPhone}
-            </a>
-          )}
-        </div>
+              {style.icon}
+              {TYPE_LABELS[post.type]}
+            </span>
 
-        <div className="flex items-center justify-between mt-1 pt-2.5 border-t border-border">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-accent-tint text-primary-dark flex items-center justify-center font-display font-bold text-[10px] flex-none">
-              {isAdmin ? <FaUser /> : post.author.name[0]}
-            </div>
-            <span className="text-[11.5px] text-ink-faint truncate">
-              {isAdmin ? 'Admin' : post.author.name}
-            </span>
+            {newPost && (
+              <span className="rounded-full bg-white px-2.5 py-1.5 text-[10px] font-bold text-primary-dark shadow-sm">
+                NEW
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-3 text-[11.5px] text-ink-faint flex-none">
-            <span className="flex items-center gap-1">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              {post.viewCount}
+
+          {/* Urgent */}
+          {post.isUrgent && (
+            <span className="absolute right-3 top-3 rounded-full bg-heart px-2.5 py-1.5 text-[9.5px] font-bold tracking-wide text-white shadow-sm">
+              URGENT
             </span>
-            <span className="flex items-center gap-1">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-              {post.commentCount}
-            </span>
+          )}
+
+          {/* Save + Share */}
+          <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2">
+            <ShareButton
+              title={post.title}
+              description={post.description}
+              path={`/students-hub/${post.id}`}
+            />
             <button
-              onClick={handleLikeClick}
-              className={`flex items-center gap-1 ${liked ? "text-heart" : ""}`}
+              type="button"
+              onClick={handleSaveClick}
+              aria-label={saved ? "Remove saved post" : "Save post"}
+              aria-pressed={saved}
+              className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/20 text-white backdrop-blur-md transition-all duration-200 hover:bg-black/40 active:scale-90 ${
+                saved ? "bg-white text-primary-dark" : ""
+              }`}
             >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill={liked ? "currentColor" : "none"}
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z" />
-              </svg>
-              {post.likeCount}
+              <MdBookmarkBorder
+                size={19}
+                className={saved ? "fill-current" : ""}
+              />
             </button>
           </div>
         </div>
-      </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-1 flex-col p-4">
+          {/* Author + time */}
+          <div className="mb-2.5 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2">
+              <div
+                className="flex h-7 w-7 flex-none items-center justify-center rounded-full font-display text-[10px] font-bold"
+                style={{
+                  backgroundColor: style.tint,
+                  color: style.fg,
+                }}
+              >
+                {authorIsAdmin ? (
+                  <FaUser size={10} />
+                ) : (
+                  post.author.name?.charAt(0).toUpperCase()
+                )}
+              </div>
+
+              <span className="truncate text-[11.5px] font-medium text-ink-faint">
+                {authorIsAdmin ? "University Admin" : post.author.name}
+              </span>
+            </div>
+
+            <span className="flex-none text-[10.5px] text-ink-faint">
+              {timeAgo(post.createdAt)}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3 className="mb-1.5 line-clamp-2 text-[15px] font-bold leading-snug text-ink transition-colors group-hover:text-primary">
+            {post.title}
+          </h3>
+
+          {/* BUY & SELL */}
+          {post.type === "BUY_SELL" && (
+            <>
+              {post.price != null && (
+                <div className="mb-2">
+                  <span className="text-[16px] font-bold tracking-tight text-primary-dark">
+                    {post.price.toLocaleString("en-RW")} RWF
+                  </span>
+                </div>
+              )}
+
+              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
+                {post.description}
+              </p>
+            </>
+          )}
+
+          {/* SIDE HUSTLE */}
+          {post.type === "SIDE_HUSTLE" && (
+            <>
+              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
+                {post.description}
+              </p>
+
+              {post.price != null && (
+                <span className="mb-2 inline-flex w-fit rounded-md bg-accent px-2.5 py-1 text-[11.5px] font-semibold text-primary-dark">
+                  {post.price.toLocaleString("en-RW")} RWF
+                </span>
+              )}
+            </>
+          )}
+
+          {/* EVENT */}
+          {post.type === "EVENT" && (
+            <>
+              {eventDate && (
+                <div className="mb-3 flex items-center gap-3 rounded-xl bg-accent-tint px-3 py-2.5">
+                  <div className="flex h-10 w-10 flex-none flex-col items-center justify-center rounded-lg bg-surface text-center">
+                    <span className="text-[8px] font-bold uppercase text-primary">
+                      {eventDate.month}
+                    </span>
+                    <span className="text-[15px] font-bold leading-none text-primary-dark">
+                      {eventDate.day}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-[11.5px] font-semibold text-primary-dark">
+                      {eventDate.weekday}
+                    </p>
+                    <p className="text-[10.5px] text-ink-faint">
+                      {eventDate.time}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
+                {post.description}
+              </p>
+            </>
+          )}
+
+          {/* LOST & FOUND */}
+          {post.type === "LOST_FOUND" && (
+            <p className="mb-2.5 line-clamp-3 text-[12.5px] leading-relaxed text-ink-soft">
+              {post.description}
+            </p>
+          )}
+
+          {/* ANNOUNCEMENT */}
+          {post.type === "ANNOUNCEMENT" && (
+            <p className="mb-2.5 line-clamp-3 text-[12.5px] leading-relaxed text-ink-soft">
+              {post.description}
+            </p>
+          )}
+
+          {/* Location */}
+          {post.location && (
+            <div className="mb-3 flex min-w-0 items-center gap-1.5 text-[11px] text-ink-faint">
+              <MdPlace
+                size={15}
+                className="flex-none"
+                style={{ color: style.fg }}
+              />
+              <span className="truncate">{post.location}</span>
+            </div>
+          )}
+
+          {/* Bottom section */}
+          <div className="mt-auto border-t border-border pt-3">
+            <div className="flex items-center justify-between gap-3">
+              {/* Stats */}
+              <div className="flex items-center gap-3 text-[11px] text-ink-faint">
+                <span className="flex items-center gap-1">
+                  <MdVisibility size={14} />
+                  {post.viewCount}
+                </span>
+
+                <span className="flex items-center gap-1">
+                  <MdComment size={14} />
+                  {post.commentCount}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={handleLikeClick}
+                  aria-label={liked ? "Unlike post" : "Like post"}
+                  aria-pressed={liked}
+                  className={`relative z-20 flex items-center gap-1 transition-all duration-200 hover:text-heart active:scale-125 ${
+                    liked ? "text-heart" : ""
+                  }`}
+                >
+                  <MdFavorite
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      liked ? "scale-110" : ""
+                    }`}
+                  />
+                  {post.likeCount}
+                </button>
+              </div>
+
+              {/* Quick action */}
+              {post.contactPhone ? (
+                <a
+                  href={`tel:${post.contactPhone}`}
+                  onClick={handleContactClick}
+                  className="relative z-20 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[10.5px] font-semibold text-white transition-all hover:bg-primary-dark active:scale-95"
+                >
+                  <MdPhone size={13} />
+                  Contact
+                </a>
+              ) : (
+                <span className="flex items-center gap-0.5 text-[10.5px] font-semibold text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                  View
+                  <MdArrowForward size={13} />
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </article>
     </Link>
   );
 }
