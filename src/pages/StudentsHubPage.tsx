@@ -93,6 +93,7 @@ export function StudentsHubPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -116,19 +117,27 @@ export function StudentsHubPage() {
     }
 
     params.set("sort", sort);
+    params.set("page", String(page));
+    params.set("limit", "6");
 
     return `?${params.toString()}`;
-  }, [activeTab, debouncedSearch, sort]);
+  }, [activeTab, debouncedSearch, page, sort]);
 
   const { data, loading, error } = useHubPosts(query);
 
   const activeTabData = TABS.find((tab) => tab.value === activeTab) ?? TABS[0];
 
   const visibleCount = data?.items?.length ?? 0;
+  const totalPages = Math.max(1, data?.pagination.totalPages ?? 1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, debouncedSearch, sort]);
 
   return (
-    <div className="relative min-w-0">
-      <div
+    <div className="relative min-w-0 bg-[#f8f4ee] text-ink">
+      {/* Background image removed for a cleaner Students Hub layout */}
+      {/* <div
         aria-hidden
         className="pointer-events-none fixed inset-x-0 top-0 -z-10 bg-cover bg-center"
         style={{
@@ -138,16 +147,16 @@ export function StudentsHubPage() {
           backgroundSize: "cover",
           backgroundPosition: "center top",
         }}
-      />
+      /> */}
 
       {/* Hero */}
-      <section className="px-5 pb-8 pt-20 md:px-10 md:pt-28 md:pb-12 min-h-[36vh] md:min-h-[44vh] lg:min-h-[52vh]">
-        <div className="mx-auto w-full max-w-7xl px-4 pb-8 pt-20 sm:px-6 md:px-10 md:pt-24">
+      <section className="px-4 pb-7 pt-16 md:px-7 md:pt-20 md:pb-10 min-h-[30vh] md:min-h-[38vh] lg:min-h-[46vh] bg-[#f8f4ee]">
+        <div className="mx-auto w-full max-w-6xl px-2 pb-6 pt-14 sm:px-4 md:px-6 md:pt-18">
           <div className="flex flex-col gap-6">
             {/* Heading */}
             <div className="max-w-2xl">
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-white/80 px-3 py-1.5 text-[10.5px] font-semibold text-primary shadow-sm backdrop-blur-sm">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-[#f3eee5] px-3 py-1.5 text-[10.5px] font-semibold text-primary-dark shadow-sm">
                   <MdAutoAwesome size={14} />
                   Student community
                 </div>
@@ -160,7 +169,7 @@ export function StudentsHubPage() {
                 />
               </div>
 
-              <h1 className="font-display text-4xl font-bold tracking-tight text-ink md:text-5xl lg:text-[56px] lg:leading-[1.02]">
+              <h1 className="font-display text-3xl font-bold tracking-tight text-ink md:text-4xl lg:text-[52px] lg:leading-[1.02]">
                 What's happening
                 <span className="block text-primary">around campus?</span>
               </h1>
@@ -173,7 +182,7 @@ export function StudentsHubPage() {
 
             {/* Search + create */}
             <div className="flex flex-col gap-3 sm:flex-row">
-              <div className="group flex min-h-[52px] flex-1 items-center gap-3 rounded-2xl border border-border bg-white px-4 shadow-soft transition-all focus-within:border-primary/30 focus-within:shadow-lift">
+              <div className="group flex min-h-[52px] flex-1 items-center gap-3 rounded-2xl border border-[#dfd4c3] bg-[#fffdf9] px-4 shadow-soft transition-all focus-within:border-primary/40 focus-within:shadow-lift">
                 <MdSearch
                   size={21}
                   className="flex-none text-ink-faint transition-colors group-focus-within:text-primary"
@@ -214,18 +223,16 @@ export function StudentsHubPage() {
               <div className="flex flex-wrap items-center gap-2 text-[11px]">
                 <span className="text-ink-faint">Popular:</span>
 
-                {["iPhone", "Jobs", "Events", "Apartments", "Textbooks"].map(
-                  (item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setSearch(item)}
-                      className="rounded-full border border-border bg-white/70 px-2.5 py-1 text-ink-soft transition-all hover:border-primary/20 hover:bg-white hover:text-primary"
-                    >
-                      {item}
-                    </button>
-                  ),
-                )}
+                {["iPhone", "laptop", "phone", "id", "shoes"].map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setSearch(item)}
+                    className="rounded-full border border-[#e2d7c3] bg-[#f3eee5] px-2.5 py-1 text-ink-soft transition-all hover:border-primary/20 hover:bg-[#f9f4ee] hover:text-primary-dark"
+                  >
+                    {item}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -233,11 +240,11 @@ export function StudentsHubPage() {
       </section>
 
       {/* Main content */}
-      <main className="px-5 pb-24 md:px-10">
-        <div className="mx-auto max-w-7xl">
+      <main className="px-4 pb-20 md:px-7">
+        <div className="mx-auto max-w-6xl">
           {/* Stats */}
-          <section className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-2xl border border-border bg-white/90 p-4 shadow-soft backdrop-blur-sm">
+          {/* <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-2xl border border-[#e9dfd0] bg-[#fffaf3] p-3 shadow-soft backdrop-blur-sm">
               <p className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-faint">
                 Total posts
               </p>
@@ -246,7 +253,7 @@ export function StudentsHubPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-white/90 p-4 shadow-soft backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#e9dfd0] bg-[#fffaf3] p-3 shadow-soft backdrop-blur-sm">
               <p className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-faint">
                 Buy & Sell
               </p>
@@ -255,7 +262,7 @@ export function StudentsHubPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-white/90 p-4 shadow-soft backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#e9dfd0] bg-[#fffaf3] p-3 shadow-soft backdrop-blur-sm">
               <p className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-faint">
                 Opportunities
               </p>
@@ -264,7 +271,7 @@ export function StudentsHubPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-white/90 p-4 shadow-soft backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#e9dfd0] bg-[#fffaf3] p-3 shadow-soft backdrop-blur-sm">
               <p className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-faint">
                 Events
               </p>
@@ -272,15 +279,12 @@ export function StudentsHubPage() {
                 {stats?.byType?.EVENT ?? 0}
               </p>
             </div>
-          </section>
+          </section> */}
 
           {/* Categories */}
           <section className="mb-7">
             <div className="mb-3 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
-                  Explore
-                </p>
                 <h2 className="mt-0.5 font-display text-lg font-bold">
                   Browse categories
                 </h2>
@@ -300,16 +304,19 @@ export function StudentsHubPage() {
                     <button
                       key={tab.label}
                       type="button"
-                      onClick={() => setActiveTab(tab.value)}
+                      onClick={() => {
+                        setActiveTab(tab.value);
+                        setPage(1);
+                      }}
                       aria-pressed={active}
-                      className={`group flex min-w-[145px] items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
+                      className={`group flex items-center gap-2 rounded-xl border px-3 py-2 text-left transition-all duration-200 ${
                         active
-                          ? "border-primary bg-primary text-white shadow-soft"
-                          : "border-border bg-white hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-soft"
+                          ? "border-primary bg-primary text-white shadow-sm"
+                          : "border-[#e7dbca] bg-[#fffdf9] hover:border-primary/30 hover:shadow-sm"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 flex-none items-center justify-center rounded-xl transition-colors ${
+                        className={`flex h-8 w-8 flex-none items-center justify-center rounded-lg transition-colors ${
                           active ? "bg-white/15" : ""
                         }`}
                         style={{
@@ -320,9 +327,9 @@ export function StudentsHubPage() {
                         {tab.icon}
                       </span>
 
-                      <span className="min-w-0">
+                      <span className="flex min-w-0 items-center gap-1.5">
                         <span
-                          className={`block text-[12px] font-bold ${
+                          className={`whitespace-nowrap text-[12px] font-bold ${
                             active ? "text-white" : "text-ink"
                           }`}
                         >
@@ -330,11 +337,11 @@ export function StudentsHubPage() {
                         </span>
 
                         <span
-                          className={`mt-0.5 block text-[10px] ${
+                          className={`text-[10px] ${
                             active ? "text-white/70" : "text-ink-faint"
                           }`}
                         >
-                          {count} {count === 1 ? "post" : "posts"}
+                          {count}
                         </span>
                       </span>
                     </button>
@@ -376,8 +383,11 @@ export function StudentsHubPage() {
 
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value as SortOption)}
-                className="w-fit rounded-xl border border-border bg-white px-3.5 py-2.5 text-[12px] font-semibold text-ink outline-none transition-colors focus:border-primary/30"
+                onChange={(e) => {
+                  setSort(e.target.value as SortOption);
+                  setPage(1);
+                }}
+                className="w-fit rounded-xl border border-[#e7dbca] bg-[#fffdf9] px-3.5 py-2.5 text-[12px] font-semibold text-ink outline-none transition-colors focus:border-primary/30"
                 aria-label="Sort posts"
               >
                 <option value="newest">Newest first</option>
@@ -437,18 +447,62 @@ export function StudentsHubPage() {
 
           {/* Posts */}
           <section>
-            <div className="mx-auto w-full max-w-[1200px] px-4">
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
-              {loading
-                ? Array.from({ length: 8 }).map((_, index) => (
-                    <HubPostCardSkeleton key={index} />
-                  ))
-                : data?.items.map((post) => (
-                    <HubPostCard key={post.id} post={post} />
-                  ))}
+            <div className="mx-auto max-w-6xl px-4">
+              <div className="grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                {loading
+                  ? Array.from({ length: 8 }).map((_, index) => (
+                      <HubPostCardSkeleton key={index} />
+                    ))
+                  : data?.items.map((post) => (
+                      <HubPostCard key={post.id} post={post} />
+                    ))}
               </div>
             </div>
           </section>
+
+          {!loading && (data?.items?.length ?? 0) > 0 && totalPages > 1 && (
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+                disabled={page <= 1}
+                className="rounded-full border border-[#e7dbca] bg-[#fffdf9] px-4 py-2 text-[12px] font-semibold text-ink transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center gap-2">
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1,
+                ).map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    type="button"
+                    onClick={() => setPage(pageNumber)}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-semibold transition-colors ${
+                      page === pageNumber
+                        ? "bg-primary text-white shadow-soft"
+                        : "border border-[#e7dbca] bg-[#fffdf9] text-ink hover:border-primary/30"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setPage((current) => Math.min(totalPages, current + 1))
+                }
+                disabled={page >= totalPages}
+                className="rounded-full border border-[#e7dbca] bg-[#fffdf9] px-4 py-2 text-[12px] font-semibold text-ink transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
 
           {/* Trending strip */}
           {!loading && (data?.items?.length ?? 0) > 0 && (

@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryCard } from "@/components/CategoryCard";
 import { PlaceCard } from "@/components/PlaceCard";
-import { useCategories, usePlaces } from "@/hooks/useApi";
+import { HubPostCard } from "@/components/HubPostCard";
+import { useCategories, useHubPosts, usePlaces } from "@/hooks/useApi";
 import type { PlaceSummary } from "@/types";
 import { CategoryCardSkeleton } from "@/components/CategoryCardSkeleton";
 import { PlaceCardSkeleton } from "@/components/PlaceCardSkeleton";
@@ -38,18 +40,101 @@ function Rail({ title, seeAllHref, loading, places }: RailProps) {
 export function HomePage() {
   const { data: categories, loading: catsLoading } = useCategories();
   const { data: featured, loading: featuredLoading } = usePlaces(
-    "?featured=true&limit=6",
+    "?featured=true&limit=8",
   );
   const { data: recent, loading: recentLoading } = usePlaces(
-    "?sort=recent&limit=6",
+    "?sort=recent&limit=8",
   );
   const { data: favorites, loading: favLoading } = usePlaces(
-    "?sort=favorites&limit=4",
+    "?sort=favorites&limit=6",
   );
+  const { data: communityPosts, loading: communityLoading } = useHubPosts(
+    "?sort=mostLiked&limit=6",
+  );
+
+  const [spotlightIndex, setSpotlightIndex] = useState(0);
+  const spotlightItems = [
+    ...((featured?.items ?? []).slice(0, 6).map((item) => ({ kind: "place" as const, item }))),
+    ...((communityPosts?.items ?? []).slice(0, 4).map((item) => ({ kind: "post" as const, item }))),
+  ];
+
+  useEffect(() => {
+    if (spotlightItems.length <= 3) return;
+
+    const timer = window.setInterval(() => {
+      setSpotlightIndex((current) => (current + 1) % Math.max(1, spotlightItems.length - 2));
+    }, 4800);
+
+    return () => window.clearInterval(timer);
+  }, [spotlightItems.length]);
+
+  const visibleSpotlight = spotlightItems.slice(spotlightIndex, spotlightIndex + 3);
+  const spotlightPageCount = Math.max(1, spotlightItems.length - 2);
 
   return (
     <div>
       <SearchBar className="mx-5 md:mx-10 lg:max-w-[520px] my-1" />
+
+      <section className="px-5 pb-4 pt-2 md:px-10">
+        <div className="overflow-hidden rounded-[28px] border border-[#eadcc1] bg-gradient-to-r from-[#f3efe8] via-[#fffaf3] to-[#f3ead8] p-4 shadow-soft md:p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-xl">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-dark/70">
+                Campus buzz
+              </p>
+              <h2 className="font-display text-2xl font-bold text-ink md:text-3xl">
+                Discover what students are talking about
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                From food spots and study cafés to jobs, events, and deals — the
+                community is moving fast across Huye.
+              </p>
+            </div>
+
+            <a
+              href="/students-hub"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2.5 text-[12px] font-semibold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-dark"
+            >
+              Discover the student community
+            </a>
+          </div>
+
+          <div className="mt-5">
+            <div className="grid gap-4 md:grid-cols-3">
+              {communityLoading || featuredLoading
+                ? Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="h-[300px] animate-pulse rounded-[18px] bg-white/60" />
+                  ))
+                : visibleSpotlight.map((entry) => (
+                    <div
+                      key={entry.kind === "place" ? entry.item.id : entry.item.id}
+                      className="transition-all duration-500 ease-out"
+                    >
+                      {entry.kind === "place" ? (
+                        <PlaceCard place={entry.item} variant="rail" />
+                      ) : (
+                        <HubPostCard post={entry.item} />
+                      )}
+                    </div>
+                  ))}
+            </div>
+
+            <div className="mt-4 flex items-center justify-center gap-2">
+              {Array.from({ length: spotlightPageCount }).map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setSpotlightIndex(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    spotlightIndex === index ? "w-7 bg-primary" : "w-2.5 bg-primary/30 hover:bg-primary/60"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6 sm:grid md:grid-cols-4 md:gap-4.5 overflow-x-auto md:overflow-visible px-5 pb-5">
         {catsLoading

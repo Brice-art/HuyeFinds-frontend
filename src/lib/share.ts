@@ -1,10 +1,16 @@
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL ?? "http://localhost:4000/api"
+const normalizeOrigin = (value: string) => value.replace(/\/$/, "");
+
+const API_ORIGIN = normalizeOrigin(
+  import.meta.env.VITE_API_URL ?? "http://localhost:4000/api",
 ).replace(/\/api\/?$/, "");
 
-const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ?? window.location.origin
-).replace(/\/$/, "");
+const SITE_URL = normalizeOrigin(
+  import.meta.env.VITE_SITE_URL ?? window.location.origin,
+);
+
+const SHARE_ORIGIN = /localhost|127\.0\.0\.1/.test(SITE_URL)
+  ? API_ORIGIN
+  : SITE_URL;
 
 export type SharePayload = {
   title: string;
@@ -13,23 +19,24 @@ export type SharePayload = {
   path: string;
 };
 
-/** Build a share URL that includes OG meta tags for rich previews. */
+/** Build a share URL that includes OG meta tags for rich previews in WhatsApp and other apps. */
 export function getShareUrl({ path }: Pick<SharePayload, "path">): string {
   const placeMatch = path.match(/^\/places\/([^/]+)$/);
   if (placeMatch) {
-    return `${API_ORIGIN}/og/places/${placeMatch[1]}`;
+    return `${SHARE_ORIGIN}/og/places/${placeMatch[1]}`;
   }
 
   const hubPostMatch = path.match(/^\/students-hub\/([^/]+)$/);
   if (hubPostMatch) {
-    return `${API_ORIGIN}/og/hub-posts/${hubPostMatch[1]}`;
+    return `${SHARE_ORIGIN}/og/hub-posts/${hubPostMatch[1]}`;
   }
 
   if (path === "/students-hub") {
-    return `${API_ORIGIN}/og/students-hub`;
+    return `${SHARE_ORIGIN}/og/students-hub`;
   }
 
-  return `${SITE_URL}${path}`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE_URL}${normalizedPath}`;
 }
 
 export function getWhatsAppUrl(text: string): string {

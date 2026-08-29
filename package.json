@@ -12,7 +12,7 @@
   "dependencies": {
     "@untitledui/file-icons": "^0.0.9",
     "@untitledui/icons": "^0.0.22",
-    "motion": "^12.42.2",
+    "motion": "^12.43.0",
     "react": "^18.3.1",
     "react-aria": "^3.50.0",
     "react-aria-components": "^1.19.0",
@@ -29,6 +29,6 @@
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
-    "vite": "^5.4.3"
+    "vite": "^8.2.2"
   }
 }

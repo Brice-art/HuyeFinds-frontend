@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { BottomNav } from "@/components/BottomNav";
+import { Footer } from "@/components/Footer";
 
 export function AppLayout() {
   return (
@@ -9,6 +10,7 @@ export function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
+      <Footer />
       <BottomNav />
     </div>
   );

@@ -12,33 +12,33 @@ export function Navbar() {
   const location = useLocation();
   const isStudentsHub = location.pathname.startsWith("/students-hub");
   const brandBadgeClass = isStudentsHub
-    ? "w-[30px] h-[30px] rounded-[9px] bg-white text-primary-dark flex items-center justify-center font-display font-bold text-base"
+    ? "w-[30px] h-[30px] rounded-[9px] bg-[#f0e3d0] text-primary-dark flex items-center justify-center font-display font-bold text-base"
     : "w-[30px] h-[30px] rounded-[9px] bg-primary text-accent flex items-center justify-center font-display font-bold text-base";
   const primaryBtnClass = isStudentsHub
-    ? "hidden lg:flex items-center gap-2 bg-white text-primary-dark text-[13px] font-semibold px-6 py-2.5 rounded-full"
+    ? "hidden lg:flex items-center gap-2 bg-[#fffaf2] text-primary-dark text-[13px] font-semibold px-6 py-2.5 rounded-full shadow-sm border border-[#e7dbca]"
     : "hidden lg:flex items-center gap-2 bg-primary text-white text-[13px] font-semibold px-6 py-2.5 rounded-full";
   const smallCtaClass = isStudentsHub
-    ? "px-6 py-2.5 bg-white text-primary-dark rounded-sm"
+    ? "px-6 py-2.5 bg-[#fffaf2] text-primary-dark rounded-full border border-[#e7dbca] shadow-sm"
     : "px-6 py-2.5 text-accent bg-primary hover:text-primary hover:bg-accent rounded-sm";
   const iconBgClass = isStudentsHub
-    ? "hidden lg:flex w-[38px] h-[38px] rounded-full bg-white/20 text-white items-center justify-center"
+    ? "hidden lg:flex w-[38px] h-[38px] rounded-full bg-[#fffaf2] text-primary-dark border border-[#e7dbca] shadow-sm items-center justify-center"
     : "hidden lg:flex w-[38px] h-[38px] rounded-full bg-surface shadow-soft items-center justify-center";
   const mobileBtnClass = isStudentsHub
-    ? "lg:hidden w-[38px] h-[38px] rounded-full bg-white/20 text-white flex items-center justify-center"
+    ? "lg:hidden w-[38px] h-[38px] rounded-full bg-[#fffaf2] text-primary-dark border border-[#e7dbca] shadow-sm flex items-center justify-center"
     : "lg:hidden w-[38px] h-[38px] rounded-full bg-surface shadow-soft flex items-center justify-center";
 
   return (
     <div
-      className={`flex items-center justify-between px-5 py-4 md:px-10 md:py-5 ${isStudentsHub ? "absolute top-0 left-0 right-0 z-20 bg-transparent text-white backdrop-blur-sm" : ""}`}
+      className={`flex items-center justify-between px-5 py-4 md:px-10 md:py-5 ${isStudentsHub ? "absolute top-0 left-0 right-0 z-20 border-b border-[#eadcc1] bg-[#f8f4ee]/90 text-primary-dark backdrop-blur-sm" : ""}`}
     >
-      <Link to="/" className="flex items-center gap-2 font-bold text-[17px]">
+      <Link to="/" className="flex items-center gap-2 font-bold text-[17px] text-primary-dark">
         <span className={brandBadgeClass}>
           H
         </span>
         Huye&nbsp;Finds
       </Link>
 
-      <nav className="hidden lg:flex items-center gap-7 font-semibold" style={{ color: isStudentsHub ? "white" : undefined }}>
+      <nav className="hidden lg:flex items-center gap-7 font-semibold" style={{ color: isStudentsHub ? "#1f3a2d" : undefined }}>
         {categories?.items.map((category) => (
           <CategoryDropdown key={category.id} category={category} />
         ))}
@@ -51,7 +51,7 @@ export function Navbar() {
         {user?.role === "OWNER" || user?.role === "ADMIN" ? (
           <Link
             to="/places/new"
-            className={`hidden lg:flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 ${isStudentsHub ? "text-white" : "text-primary"}`}
+            className={`hidden lg:flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 ${isStudentsHub ? "text-primary-dark" : "text-primary"}`}
           >
             + Add a place
           </Link>
