@@ -134,7 +134,7 @@ export function HubPostCard({ post }: { post: HubPost }) {
   const descriptionText = post.description ?? "";
   const showReadMore = descriptionText.trim().length > 110;
 
-  const authorIsAdmin = "role" in post.author && post.author.role === "ADMIN";
+  const authorIsAdmin = "role" in post.author && post.author.role === "ADMIN" || "OWNER";
 
   function handleLikeClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -259,7 +259,7 @@ export function HubPostCard({ post }: { post: HubPost }) {
               </div>
 
               <span className="truncate text-[11.5px] font-medium text-ink-faint">
-                {authorIsAdmin ? "University Admin" : post.author.name}
+                {authorIsAdmin ? "Admin" : post.author.name}
               </span>
             </div>
 
