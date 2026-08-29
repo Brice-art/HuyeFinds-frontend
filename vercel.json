@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/og/:path*", "destination": "https://huyefinds-backend.onrender.com/og/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
