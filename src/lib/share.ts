@@ -1,16 +1,10 @@
 const normalizeOrigin = (value: string) => value.replace(/\/$/, "");
 
-const API_ORIGIN = normalizeOrigin(
-  import.meta.env.VITE_API_URL ?? "http://localhost:4000/api",
-).replace(/\/api\/?$/, "");
-
 const SITE_URL = normalizeOrigin(
   import.meta.env.VITE_SITE_URL ?? window.location.origin,
 );
 
-const SHARE_ORIGIN = /localhost|127\.0\.0\.1/.test(SITE_URL)
-  ? API_ORIGIN
-  : SITE_URL;
+const SHARE_ORIGIN = SITE_URL;
 
 export type SharePayload = {
   title: string;
