@@ -8,7 +8,9 @@ const SITE_URL = normalizeOrigin(
   import.meta.env.VITE_SITE_URL ?? window.location.origin,
 );
 
-const SHARE_ORIGIN = API_ORIGIN;
+const SHARE_ORIGIN = /localhost|127\.0\.0\.1/.test(SITE_URL)
+  ? API_ORIGIN
+  : SITE_URL;
 
 export type SharePayload = {
   title: string;
