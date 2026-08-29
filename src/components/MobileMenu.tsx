@@ -19,6 +19,7 @@ export function MobileMenu({
   onLogout,
 }: MobileMenuProps) {
   const location = useLocation();
+  const isStudentsHub = location.pathname.startsWith("/students-hub");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,8 +45,8 @@ export function MobileMenu({
         aria-hidden="true"
       />
 
-      <div className="absolute top-0 right-0 h-full w-[85%] max-w-sm bg-bg shadow-lift flex flex-col animate-slideIn">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-none">
+      <div className={`absolute top-0 right-0 h-full w-[85%] max-w-sm shadow-lift flex flex-col animate-slideIn ${isStudentsHub ? "bg-[#f8f4ee] text-primary-dark" : "bg-bg text-ink"}`}>
+        <div className={`flex items-center justify-between px-5 py-4 border-b flex-none ${isStudentsHub ? "border-[#e7dbca]" : "border-border"}`}>
           <span className="font-display font-bold text-[16px]">Menu</span>
           <button
             onClick={onClose}
@@ -170,7 +171,7 @@ export function MobileMenu({
                 onLogout();
                 onClose();
               }}
-              className="w-full bg-primary text-white text-[13.5px] font-semibold py-3 rounded-full"
+              className={`w-full text-[13.5px] font-semibold py-3 rounded-full ${isStudentsHub ? "bg-[#fffaf2] text-primary-dark border border-[#e7dbca]" : "bg-primary text-white"}`}
             >
               Sign out
             </button>
@@ -179,7 +180,7 @@ export function MobileMenu({
               to="/login"
               state={{ from: location }}
               onClick={onClose}
-              className="block text-center w-full bg-primary text-white text-[13.5px] font-semibold py-3 rounded-full"
+              className={`block text-center w-full text-[13.5px] font-semibold py-3 rounded-full ${isStudentsHub ? "bg-[#fffaf2] text-primary-dark border border-[#e7dbca]" : "bg-primary text-white"}`}
             >
               Sign in
             </Link>

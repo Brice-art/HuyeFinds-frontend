@@ -131,6 +131,8 @@ export function HubPostCard({ post }: { post: HubPost }) {
 
   const cover = post.images?.[0]?.url;
   const newPost = isNewPost(post.createdAt);
+  const descriptionText = post.description ?? "";
+  const showReadMore = descriptionText.trim().length > 110;
 
   const authorIsAdmin = "role" in post.author && post.author.role === "ADMIN";
 
@@ -159,14 +161,14 @@ export function HubPostCard({ post }: { post: HubPost }) {
 
   return (
     <Link to={`/students-hub/${post.id}`}>
-      <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lift cursor-pointer">
+      <article className="group relative flex min-h-[300px] w-full flex-col overflow-hidden rounded-[18px] bg-[#F7F4EE] shadow-[0_6px_14px_rgba(18,26,22,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(18,26,22,0.09)] cursor-pointer ring-1 ring-black/5">
         <div
-          className="absolute inset-0 z-0 cursor-pointer focus:outline-none focus:ring-4 focus:ring-primary/30 rounded-2xl"
+          className="absolute inset-0 z-0 cursor-pointer focus:outline-none focus:ring-4 focus:ring-primary/30 rounded-[28px]"
           aria-label={`View ${post.title}`}
         />
 
         {/* Image */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-accent-tint">
+        <div className="relative h-[176px] overflow-hidden bg-accent-tint">
           {cover ? (
             <img
               src={cld(cover, 700)}
@@ -238,12 +240,12 @@ export function HubPostCard({ post }: { post: HubPost }) {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-1 flex-col p-4">
+        <div className="relative z-10 flex min-h-0 flex-1 flex-col bg-[#F7F4EE] p-2.5 pt-2">
           {/* Author + time */}
-          <div className="mb-2.5 flex items-center justify-between gap-3">
+          <div className="mb-1.5 flex items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
               <div
-                className="flex h-7 w-7 flex-none items-center justify-center rounded-full font-display text-[10px] font-bold"
+                className="flex h-6 w-6 flex-none items-center justify-center rounded-full font-display text-[10px] font-bold"
                 style={{
                   backgroundColor: style.tint,
                   color: style.fg,
@@ -267,12 +269,12 @@ export function HubPostCard({ post }: { post: HubPost }) {
           </div>
 
           {/* Title */}
-          <h3 className="mb-1.5 line-clamp-2 text-[15px] font-bold leading-snug text-ink transition-colors group-hover:text-primary">
+          <h3 className="mb-1 line-clamp-2 text-[12.5px] font-bold leading-[1.2] text-ink transition-colors group-hover:text-primary">
             {post.title}
           </h3>
 
           {/* BUY & SELL */}
-          {post.type === "BUY_SELL" && (
+          {/* {post.type === "BUY_SELL" && (
             <>
               {post.price != null && (
                 <div className="mb-2">
@@ -282,18 +284,32 @@ export function HubPostCard({ post }: { post: HubPost }) {
                 </div>
               )}
 
-              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
-                {post.description}
-              </p>
+              <div className="mb-1.5 min-h-[2.3rem]">
+                <p className="line-clamp-2 text-[11.5px] leading-[1.35] text-ink-soft">
+                  {descriptionText}
+                </p>
+                {showReadMore && (
+                  <p className="mt-0.5 text-[10.5px] font-semibold text-primary">
+                    Read more
+                  </p>
+                )}
+              </div>
             </>
-          )}
+          )} */}
 
           {/* SIDE HUSTLE */}
-          {post.type === "SIDE_HUSTLE" && (
+          {/* {post.type === "SIDE_HUSTLE" && (
             <>
-              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
-                {post.description}
-              </p>
+              <div className="mb-1.5 min-h-[2.5rem]">
+                <p className="line-clamp-2 text-[11.75px] leading-[1.4] text-ink-soft">
+                  {descriptionText}
+                </p>
+                {showReadMore && (
+                  <p className="mt-0.5 text-[10.5px] font-semibold text-primary">
+                    Read more
+                  </p>
+                )}
+              </div>
 
               {post.price != null && (
                 <span className="mb-2 inline-flex w-fit rounded-md bg-accent px-2.5 py-1 text-[11.5px] font-semibold text-primary-dark">
@@ -301,52 +317,82 @@ export function HubPostCard({ post }: { post: HubPost }) {
                 </span>
               )}
             </>
-          )}
+          )} */}
 
           {/* EVENT */}
-          {post.type === "EVENT" && (
+          {post.type === "EVENT" && eventDate && (
+            <div className="mb-1.5 flex items-center gap-2 rounded-lg bg-accent-tint px-2 py-1.5">
+              <div className="flex h-8 w-8 flex-none flex-col items-center justify-center rounded-md bg-surface text-center">
+                <span className="text-[7px] font-bold uppercase text-primary">
+                  {eventDate.month}
+                </span>
+                <span className="text-[12px] font-bold leading-none text-primary-dark">
+                  {eventDate.day}
+                </span>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold text-primary-dark">
+                  {eventDate.weekday}
+                </p>
+                <p className="text-[9px] text-ink-faint">{eventDate.time}</p>
+              </div>
+            </div>
+          )}
+
+          {post.type !== "EVENT" && (
             <>
-              {eventDate && (
-                <div className="mb-3 flex items-center gap-3 rounded-xl bg-accent-tint px-3 py-2.5">
-                  <div className="flex h-10 w-10 flex-none flex-col items-center justify-center rounded-lg bg-surface text-center">
-                    <span className="text-[8px] font-bold uppercase text-primary">
-                      {eventDate.month}
-                    </span>
-                    <span className="text-[15px] font-bold leading-none text-primary-dark">
-                      {eventDate.day}
-                    </span>
-                  </div>
+              <div className="mb-1 min-h-[2.6rem]">
+                <p className="line-clamp-2 text-[10.5px] leading-[1.35] text-ink-soft">
+                  {descriptionText}
+                </p>
+                {showReadMore && (
+                  <p className="mt-0.5 text-[10.5px] font-semibold text-primary">
+                    Read more
+                  </p>
+                )}
+              </div>
 
-                  <div className="min-w-0">
-                    <p className="text-[11.5px] font-semibold text-primary-dark">
-                      {eventDate.weekday}
-                    </p>
-                    <p className="text-[10.5px] text-ink-faint">
-                      {eventDate.time}
-                    </p>
-                  </div>
-                </div>
+              {post.type === "BUY_SELL" && post.price != null && (
+                <span className="mb-1 text-[13px] font-bold text-primary-dark">
+                  {post.price.toLocaleString("en-RW")} RWF
+                </span>
               )}
-
-              <p className="mb-2.5 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
-                {post.description}
-              </p>
+              {post.type === "SIDE_HUSTLE" && post.price != null && (
+                <span className="mb-1 inline-flex w-fit rounded-md bg-accent px-2 py-0.5 text-[10px] font-semibold text-primary-dark">
+                  {post.price.toLocaleString("en-RW")} RWF
+                </span>
+              )}
             </>
           )}
 
           {/* LOST & FOUND */}
-          {post.type === "LOST_FOUND" && (
-            <p className="mb-2.5 line-clamp-3 text-[12.5px] leading-relaxed text-ink-soft">
-              {post.description}
-            </p>
-          )}
+          {/* {post.type === "LOST_FOUND" && (
+            <div className="mb-1.5 min-h-[2.5rem]">
+              <p className="line-clamp-2 text-[11.75px] leading-[1.4] text-ink-soft">
+                {descriptionText}
+              </p>
+              {showReadMore && (
+                <p className="mt-0.5 text-[10.5px] font-semibold text-primary">
+                  Read more
+                </p>
+              )}
+            </div>
+          )} */}
 
           {/* ANNOUNCEMENT */}
-          {post.type === "ANNOUNCEMENT" && (
-            <p className="mb-2.5 line-clamp-3 text-[12.5px] leading-relaxed text-ink-soft">
-              {post.description}
-            </p>
-          )}
+          {/* {post.type === "ANNOUNCEMENT" && (
+            <div className="mb-1.5 min-h-[2.5rem]">
+              <p className="line-clamp-2 text-[11.75px] leading-[1.4] text-ink-soft">
+                {descriptionText}
+              </p>
+              {showReadMore && (
+                <p className="mt-0.5 text-[10.5px] font-semibold text-primary">
+                  Read more
+                </p>
+              )}
+            </div>
+          )} */}
 
           {/* Location */}
           {post.location && (
@@ -361,10 +407,10 @@ export function HubPostCard({ post }: { post: HubPost }) {
           )}
 
           {/* Bottom section */}
-          <div className="mt-auto border-t border-border pt-3">
+          <div className="mt-auto border-t border-black/5 pt-1.5">
             <div className="flex items-center justify-between gap-3">
               {/* Stats */}
-              <div className="flex items-center gap-3 text-[11px] text-ink-faint">
+              <div className="flex items-center gap-2 text-[10px] text-ink-faint">
                 <span className="flex items-center gap-1">
                   <MdVisibility size={14} />
                   {post.viewCount}
