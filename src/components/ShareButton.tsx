@@ -113,15 +113,11 @@ export function ShareButton({
           open ? "bg-black/90" : "bg-black/20 hover:bg-black/40"
         }`
       : variant === "pill"
-        ? `inline-flex items-center gap-1.5 rounded-full border border-primary/10 px-3 py-1.5 text-[10.5px] font-semibold text-primary shadow-sm backdrop-blur-sm transition-colors ${
-            open ? "bg-white" : "bg-white/80 hover:bg-white"
-          }`
-        : `flex h-8 w-8 items-center justify-center rounded-full text-ink-soft shadow-md transition-colors active:scale-90 ${
-            open ? "bg-white" : "bg-white/90 hover:bg-white"
-          }`;
+        ? "inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-white/80 px-3 py-1.5 text-[10.5px] font-semibold text-primary shadow-sm backdrop-blur-sm transition-colors hover:text-primary-dark"
+        : "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-soft shadow-md transition-colors hover:text-primary";
 
   return (
-    <div ref={menuRef} className={`relative z-20 ${className}`}>
+    <div ref={menuRef} className={`relative z-1 ${className}`}>
       <button
         type="button"
         onClick={handleTriggerClick}
@@ -145,7 +141,7 @@ export function ShareButton({
             ref={(el) => (portalRef.current = el)}
             role="menu"
             style={{ position: "fixed", top: portalPos.top, left: portalPos.left }}
-            className="z-50 mt-1.5 min-w-[148px] overflow-hidden rounded-xl border border-border py-1 shadow-lift"
+            className="z-50 mt-1.5 min-w-[148px] overflow-hidden rounded-xl border border-border py-1 shadow-lift bg-white"
             onClick={(e) => e.stopPropagation()}
           >
             <button

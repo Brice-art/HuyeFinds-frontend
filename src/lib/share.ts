@@ -8,9 +8,7 @@ const SITE_URL = normalizeOrigin(
   import.meta.env.VITE_SITE_URL ?? window.location.origin,
 );
 
-const SHARE_ORIGIN = /localhost|127\.0\.0\.1/.test(SITE_URL)
-  ? API_ORIGIN
-  : SITE_URL;
+const SHARE_ORIGIN = API_ORIGIN;
 
 export type SharePayload = {
   title: string;
@@ -47,7 +45,9 @@ export async function copyShareLink(url: string): Promise<void> {
   await navigator.clipboard.writeText(url);
 }
 
-export async function shareContent(payload: SharePayload): Promise<"shared" | "copied"> {
+export async function shareContent(
+  payload: SharePayload,
+): Promise<"shared" | "copied"> {
   const url = getShareUrl(payload);
   const text = payload.description
     ? `${payload.title}\n${payload.description}`
