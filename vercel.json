@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" },
-    { "source": "/og/:path*", "destination": "https://huyefinds-backend.onrender.com/og/:path*" }
+    { "source": "/og/:path*", "destination": "https://huyefinds-backend.onrender.com/og/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
