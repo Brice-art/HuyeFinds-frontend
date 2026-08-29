@@ -13,7 +13,7 @@ export type SharePayload = {
   path: string;
 };
 
-/** Build a share URL that includes OG meta tags for rich previews. */
+/** Build a share URL that includes OG meta tags for rich previews in WhatsApp and other apps. */
 export function getShareUrl({ path }: Pick<SharePayload, "path">): string {
   const placeMatch = path.match(/^\/places\/([^/]+)$/);
   if (placeMatch) {
@@ -29,7 +29,8 @@ export function getShareUrl({ path }: Pick<SharePayload, "path">): string {
     return `${API_ORIGIN}/og/students-hub`;
   }
 
-  return `${SITE_URL}${path}`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE_URL}${normalizedPath}`;
 }
 
 export function getWhatsAppUrl(text: string): string {

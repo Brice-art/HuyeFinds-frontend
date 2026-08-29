@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { PhoneMockup } from "./PhoneMockup";
 import { useScrollZoom } from "@/hooks/useScrollZoom";
 
@@ -224,55 +225,58 @@ export function HeroSection() {
               services and more, all in one place.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 mb-9">
-              <Link
-                to="/home"
-                className="inline-flex items-center gap-2 bg-primary text-white font-semibold text-sm px-6 py-3.5 rounded-full shadow-lift"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
+            <div className="mb-9 flex flex-wrap items-center gap-3">
+              <motion.div whileHover={{ y: -2, scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/home"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white shadow-lift"
                 >
-                  <circle cx="12" cy="12" r="9" />
-                  <polygon points="16 8 13.5 13.5 8 16 10.5 10.5 16 8" />
-                </svg>
-                Explore Places
-              </Link>
-              <Link
-                to="/favorites"
-                className="inline-flex items-center gap-2 bg-white text-ink font-semibold text-sm px-6 py-3.5 rounded-full border border-border shadow-soft"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <polygon points="16 8 13.5 13.5 8 16 10.5 10.5 16 8" />
+                  </svg>
+                  Explore Places
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -2, scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/favorites"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-6 py-3.5 text-sm font-semibold text-ink shadow-soft"
                 >
-                  <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z" />
-                </svg>
-                Save Favorites
-              </Link>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z" />
+                  </svg>
+                  Save Favorites
+                </Link>
+              </motion.div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">
               {FEATURES.map((f) => (
-                <div key={f.label}>
-                  <div className="w-9 h-9 rounded-full bg-primary-tint text-primary flex items-center justify-center mb-2.5">
+                <motion.div key={f.label} whileHover={{ y: -6, scale: 1.02 }}>
+                  <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-primary-tint text-primary">
                     {f.icon}
                   </div>
-                  <div className="text-[13.5px] font-semibold text-ink">
-                    {f.label}
-                  </div>
-                  <div className="text-[11.5px] text-ink-soft leading-snug mt-0.5">
+                  <div className="text-[13.5px] font-semibold text-ink">{f.label}</div>
+                  <div className="mt-0.5 text-[11.5px] leading-snug text-ink-soft">
                     {f.desc}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -281,14 +285,26 @@ export function HeroSection() {
           <div className="hidden lg:block lg:flex-1">
             <div
               ref={tiltRef}
+              className="mx-auto w-full max-w-[340px] lg:max-w-[360px] lg:translate-y-2"
               style={{
                 transformStyle: "preserve-3d",
                 willChange: "transform",
                 transformOrigin: "center center",
               }}
             >
-              <PhoneMockup>
-                <div className="text-ink">
+              <motion.div
+                initial={{ opacity: 0, x: 24, y: 18, rotate: -3 }}
+                animate={{ opacity: 1, x: 0, y: [0, -8, 0], rotate: [0, 2, 0] }}
+                transition={{
+                  duration: 0.9,
+                  ease: "easeOut",
+                  y: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 10, repeat: Infinity, ease: "easeInOut" },
+                }}
+                className="relative"
+              >
+                <PhoneMockup>
+                  <div className="text-ink">
                   <p className="text-[13px] text-ink-soft">
                     Hello, Customer 👋
                   </p>
@@ -469,14 +485,19 @@ export function HeroSection() {
                     <span className="text-[8px] font-semibold">Profile</span>
                   </div>
                 </div>
-              </PhoneMockup>
+                </PhoneMockup>
+              </motion.div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom banner */}
-      <div className="mx-5 md:mx-10 -mt-4 md:-mt-6 relative z-10 flex items-center justify-between gap-4 bg-surface border border-border rounded-2xl shadow-soft px-5 py-4 md:px-7 md:py-5">
+      <motion.div
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="mx-5 md:mx-10 -mt-4 md:-mt-6 relative z-10 flex items-center justify-between gap-4 bg-surface border border-border rounded-2xl shadow-soft px-5 py-4 md:px-7 md:py-5"
+      >
         <div className="flex items-center gap-3.5">
           <div className="w-9 h-9 rounded-full bg-primary-tint text-primary flex items-center justify-center flex-none">
             <svg
@@ -523,7 +544,7 @@ export function HeroSection() {
           <circle cx="80" cy="40" r="7" />
           <line x1="80" y1="47" x2="80" y2="50" />
         </svg>
-      </div>
+      </motion.div>
     </>
   );
 }

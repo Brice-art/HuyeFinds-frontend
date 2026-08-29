@@ -88,7 +88,7 @@ export function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       to={`/browse?category=${category.slug}`}
-      className="flex-none w-full bg-surface rounded-md p-4 md:p-5 text-center shadow-soft border border-border transition-transform active:scale-95"
+      className="flex h-full w-full flex-col items-center justify-center rounded-md border border-border bg-surface p-4 text-center shadow-soft transition-transform active:scale-95 md:p-5"
     >
       <div
         className="w-11 h-11 rounded-xl mx-auto mb-2.5 flex items-center justify-center"
