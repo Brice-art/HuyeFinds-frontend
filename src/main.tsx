@@ -8,11 +8,28 @@ function AppShell() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setReady(true);
-    }, 1800);
+    let cancelled = false;
 
-    return () => window.clearTimeout(timer);
+    const startBootstrap = async () => {
+      const waitForPageLoad = document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise<void>((resolve) => {
+            window.addEventListener("load", () => resolve(), { once: true });
+          });
+
+      const fontsReady = document.fonts?.ready ?? Promise.resolve();
+
+      await Promise.all([waitForPageLoad, fontsReady]);
+      await new Promise((resolve) => window.setTimeout(resolve, 1200));
+
+      if (!cancelled) setReady(true);
+    };
+
+    startBootstrap();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return <>{ready ? <App /> : <AppBootLoader />}</>;

@@ -135,6 +135,16 @@ export function MobileMenu({
             Students Hub
           </Link>
 
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              onClick={onClose}
+              className="block py-2.5 text-[14.5px] font-semibold text-primary border-b border-border"
+            >
+              Admin dashboard
+            </Link>
+          )}
+
           {(user?.role === "OWNER" || user?.role === "ADMIN") && (
             <Link
               to="/places/new"

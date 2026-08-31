@@ -88,6 +88,9 @@ const TABS: HubTab[] = [
 export function StudentsHubPage() {
   const { user } = useAuth();
   const location = useLocation();
+  const postQueued = Boolean(
+    (location.state as { postQueued?: boolean } | null)?.postQueued,
+  );
 
   const [activeTab, setActiveTab] = useState<HubPostType | "">("");
   const [search, setSearch] = useState("");
@@ -242,6 +245,12 @@ export function StudentsHubPage() {
       {/* Main content */}
       <main className="px-4 pb-20 md:px-7">
         <div className="mx-auto max-w-6xl">
+          {postQueued && (
+            <div className="mb-6 rounded-2xl border border-[#d8ebdc] bg-[#edf9f0] px-4 py-3 text-[12.5px] font-medium text-[#1a5d39] shadow-soft">
+              Your post has been submitted and is now queued for admin approval.
+            </div>
+          )}
+
           {/* Stats */}
           {/* <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-2xl border border-[#e9dfd0] bg-[#fffaf3] p-3 shadow-soft backdrop-blur-sm">

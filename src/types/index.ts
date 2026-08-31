@@ -131,6 +131,7 @@ export interface HubPost {
   price: number | null;
   isUrgent: boolean;
   isPinned: boolean;
+  isActive?: boolean;
   viewCount: number;
   contactPhone: string | null;
   location: string | null;
@@ -148,4 +149,58 @@ export interface HubPost {
 export interface HubPostStats {
   total: number;
   byType: Record<string, number>;
+}
+
+export interface AdminOverview {
+  stats: {
+    totalUsers: number;
+    currentUsers: number;
+    userGrowthPercent: number | null;
+    userWeeklyGrowthPercent: number | null;
+    usersCreatedLast7Days: number;
+    usersCreatedLast30Days: number;
+    totalPlaces: number;
+    totalHubPosts: number;
+    activeHubPosts: number;
+    pendingHubPosts: number;
+  };
+  recentUsers: Array<{
+    id: string;
+    name: string;
+    email: string;
+    createdAt: string;
+    role: string;
+  }>;
+  placeInsights: {
+    topCategories: Array<{
+      name: string;
+      count: number;
+    }>;
+    topPlaces: Array<{
+      id: string;
+      name: string;
+      category: string;
+      favoriteCount: number;
+      reviewCount: number;
+    }>;
+  };
+  hubPostInsights: {
+    mostLiked: Array<{
+      id: string;
+      title: string;
+      likes: number;
+      comments: number;
+      viewCount: number;
+      authorName: string;
+    }>;
+    mostViewed: Array<{
+      id: string;
+      title: string;
+      viewCount: number;
+      likes: number;
+      comments: number;
+      authorName: string;
+    }>;
+  };
+  pendingHubPosts: HubPost[];
 }

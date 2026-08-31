@@ -7,11 +7,15 @@ export function StarRating({ rating, reviewCount }: StarRatingProps) {
   const rounded = Math.round(rating);
 
   if (rating <= 0) {
-    return <div className="text-xs text-ink-faint">No reviews yet</div>;
+    return (
+      <div className="whitespace-nowrap text-xs text-ink-faint">
+        No reviews yet
+      </div>
+    );
   }
 
   return (
-    <div className="flex items-center gap-1 text-xs text-ink-soft">
+    <div className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-ink-soft">
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
