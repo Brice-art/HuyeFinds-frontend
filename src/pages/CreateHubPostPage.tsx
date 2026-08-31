@@ -74,7 +74,9 @@ export function CreateHubPostPage() {
         eventDate: type === "EVENT" && eventDate ? eventDate : undefined,
         images: imageState.images,
       });
-      navigate("/students-hub");
+      navigate("/students-hub", {
+        state: { postQueued: true },
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong");
     } finally {

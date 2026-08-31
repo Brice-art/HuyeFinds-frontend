@@ -48,6 +48,14 @@ export function Navbar() {
       </nav>
 
       <div className="flex items-center gap-2.5">
+        {user?.role === "ADMIN" && (
+          <Link
+            to="/admin"
+            className={`hidden lg:flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 ${isStudentsHub ? "text-primary-dark" : "text-primary"}`}
+          >
+            Dashboard
+          </Link>
+        )}
         {user?.role === "OWNER" || user?.role === "ADMIN" ? (
           <Link
             to="/places/new"

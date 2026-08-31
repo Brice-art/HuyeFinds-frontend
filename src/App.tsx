@@ -70,6 +70,11 @@ const HubPostDetailPage = lazy(() =>
 const HubPostEditPage = lazy(() =>
   import("@/pages/HubPostEditPage").then((m) => ({ default: m.HubPostEditPage })),
 );
+const AdminDashboardPage = lazy(() =>
+  import("@/pages/AdminDashboardPage").then((m) => ({
+    default: m.AdminDashboardPage,
+  })),
+);
 const PlaceEditPage = lazy(() =>
   import("@/pages/PlaceEditPage").then((m) => ({ default: m.PlaceEditPage })),
 );
@@ -105,6 +110,7 @@ export default function App() {
               <Route path="/students-hub/new" element={<CreateHubPostPage />} />
               <Route path="/students-hub/:id" element={<HubPostDetailPage />} />
               <Route path="/students-hub/:id/edit" element={<HubPostEditPage />} />
+              <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/places/:slug/edit" element={<PlaceEditPage />} />
               <Route
                 path="/about"
